@@ -23,14 +23,14 @@ struct XORTests {
         
         for payload in payloads {
             await cpu.reset()
-            cpu.A = payload.initialA
+            await cpu.setA(payload.initialA)
             memory[0xA000] = Opcodes6502.EOR_Immediate.rawValue
             memory[0xA001] = payload.operand
             
             await cpu.runForTicks(2)
             #expect(cpu.A == payload.result)
-            #expect(await cpu.readFlag(.Z) == payload.Z)
-            #expect(await cpu.readFlag(.N) == payload.N)
+            #expect( cpu.readFlag(.Z) == payload.Z)
+            #expect( cpu.readFlag(.N) == payload.N)
         }
     }
     
@@ -40,15 +40,15 @@ struct XORTests {
         
         for payload in payloads {
             await cpu.reset()
-            cpu.A = payload.initialA
+            await cpu.setA(payload.initialA)
             memory[0xA000] = Opcodes6502.EOR_ZeroPage.rawValue
             memory[0xA001] = 0x06
             memory[0x06] = payload.operand
             
             await cpu.runForTicks(2)
             #expect(cpu.A == payload.result)
-            #expect(await cpu.readFlag(.Z) == payload.Z)
-            #expect(await cpu.readFlag(.N) == payload.N)
+            #expect( cpu.readFlag(.Z) == payload.Z)
+            #expect( cpu.readFlag(.N) == payload.N)
         }
     }
     
@@ -58,16 +58,16 @@ struct XORTests {
         
         for payload in payloads {
             await cpu.reset()
-            cpu.A = payload.initialA
-            cpu.X = 0x10
+            await cpu.setA(payload.initialA)
+            await cpu.setX(0x10)
             memory[0xA000] = Opcodes6502.EOR_ZeroPageX.rawValue
             memory[0xA001] = 0x32
             memory[0x42] = payload.operand
             
             await cpu.runForTicks(4)
             #expect(cpu.A == payload.result)
-            #expect(await cpu.readFlag(.Z) == payload.Z)
-            #expect(await cpu.readFlag(.N) == payload.N)
+            #expect( cpu.readFlag(.Z) == payload.Z)
+            #expect( cpu.readFlag(.N) == payload.N)
         }
     }
     
@@ -77,7 +77,7 @@ struct XORTests {
         
         for payload in payloads {
             await cpu.reset()
-            cpu.A = payload.initialA
+            await cpu.setA(payload.initialA)
             memory[0xA000] = Opcodes6502.EOR_Absolute.rawValue
             memory[0xA001] = 0x34
             memory[0xA002] = 0x12
@@ -85,8 +85,8 @@ struct XORTests {
             
             await cpu.runForTicks(4)
             #expect(cpu.A == payload.result)
-            #expect(await cpu.readFlag(.Z) == payload.Z)
-            #expect(await cpu.readFlag(.N) == payload.N)
+            #expect( cpu.readFlag(.Z) == payload.Z)
+            #expect( cpu.readFlag(.N) == payload.N)
         }
     }
     
@@ -96,8 +96,8 @@ struct XORTests {
         
         for payload in payloads {
             await cpu.reset()
-            cpu.A = payload.initialA
-            cpu.X = 0x10
+            await cpu.setA(payload.initialA)
+            await cpu.setX(0x10)
             memory[0xA000] = Opcodes6502.EOR_AbsoluteX.rawValue
             memory[0xA001] = 0x78
             memory[0xA002] = 0x56
@@ -105,25 +105,25 @@ struct XORTests {
             
             await cpu.runForTicks(4)
             #expect(cpu.A == payload.result)
-            #expect(await cpu.readFlag(.Z) == payload.Z)
-            #expect(await cpu.readFlag(.N) == payload.N)
+            #expect( cpu.readFlag(.Z) == payload.Z)
+            #expect( cpu.readFlag(.N) == payload.N)
         }
         
         // Test crossing a page boundary takes five ticks instead of four.
         await cpu.reset()
-        cpu.A = 0x33
-        cpu.X = 0x20
+        await cpu.setA(0x33)
+        await cpu.setX(0x20)
         memory[0xA000] = Opcodes6502.EOR_AbsoluteX.rawValue
         memory[0xA001] = 0xF0
         memory[0xA002] = 0x56
         memory[0x5710] = 0x17
         
-        let oldTickcount = cpu.tickcount
+        let oldTickcount = await cpu.tickcount
         await cpu.runForTicks(5)
-        #expect(cpu.tickcount - oldTickcount == 5)
+        #expect( cpu.tickcount - oldTickcount == 5)
         #expect(cpu.A == 0x24)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == false)
     }
     
     @Test func testEOR_AbsoluteY() async throws {
@@ -132,8 +132,8 @@ struct XORTests {
         
         for payload in payloads {
             await cpu.reset()
-            cpu.A = payload.initialA
-            cpu.Y = 0x10
+            await cpu.setA(payload.initialA)
+            await cpu.setY(0x10)
             memory[0xA000] = Opcodes6502.EOR_AbsoluteY.rawValue
             memory[0xA001] = 0x78
             memory[0xA002] = 0x56
@@ -141,25 +141,25 @@ struct XORTests {
             
             await cpu.runForTicks(4)
             #expect(cpu.A == payload.result)
-            #expect(await cpu.readFlag(.Z) == payload.Z)
-            #expect(await cpu.readFlag(.N) == payload.N)
+            #expect( cpu.readFlag(.Z) == payload.Z)
+            #expect( cpu.readFlag(.N) == payload.N)
         }
         
         // Test crossing a page boundary takes five ticks instead of four.
         await cpu.reset()
-        cpu.A = 0x33
-        cpu.Y = 0x20
+        await cpu.setA(0x33)
+        await cpu.setY(0x20)
         memory[0xA000] = Opcodes6502.EOR_AbsoluteY.rawValue
         memory[0xA001] = 0xF0
         memory[0xA002] = 0x56
         memory[0x5710] = 0x17
         
-        let oldTickcount = cpu.tickcount
+        let oldTickcount = await cpu.tickcount
         await cpu.runForTicks(5)
-        #expect(cpu.tickcount - oldTickcount == 5)
+        #expect( cpu.tickcount - oldTickcount == 5)
         #expect(cpu.A == 0x24)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == false)
     }
     
     @Test func testEOR_IndirectX() async throws {
@@ -168,8 +168,8 @@ struct XORTests {
         
         for payload in payloads {
             await cpu.reset()
-            cpu.A = payload.initialA
-            cpu.X = 0x20
+            await cpu.setA(payload.initialA)
+            await cpu.setX(0x20)
             memory[0xA000] = Opcodes6502.EOR_IndirectX.rawValue
             memory[0xA001] = 0x66
             memory[0x86] = 0x73
@@ -178,8 +178,8 @@ struct XORTests {
             
             await cpu.runForTicks(6)
             #expect(cpu.A == payload.result)
-            #expect(await cpu.readFlag(.Z) == payload.Z)
-            #expect(await cpu.readFlag(.N) == payload.N)
+            #expect( cpu.readFlag(.Z) == payload.Z)
+            #expect( cpu.readFlag(.N) == payload.N)
         }
     }
     
@@ -189,8 +189,8 @@ struct XORTests {
         
         for payload in payloads {
             await cpu.reset()
-            cpu.A = payload.initialA
-            cpu.Y = 0x20
+            await cpu.setA(payload.initialA)
+            await cpu.setY(0x20)
             memory[0xA000] = Opcodes6502.EOR_IndirectY.rawValue
             memory[0xA001] = 0x66
             memory[0x66] = 0x73
@@ -199,14 +199,14 @@ struct XORTests {
             
             await cpu.runForTicks(5)
             #expect(cpu.A == payload.result)
-            #expect(await cpu.readFlag(.Z) == payload.Z)
-            #expect(await cpu.readFlag(.N) == payload.N)
+            #expect( cpu.readFlag(.Z) == payload.Z)
+            #expect( cpu.readFlag(.N) == payload.N)
         }
         
         // Test crossing a page boundary takes five ticks instead of four.
         await cpu.reset()
-        cpu.A = 0x7F
-        cpu.Y = 0x20
+        await cpu.setA(0x7F)
+        await cpu.setY(0x20)
         memory[0xA000] = Opcodes6502.EOR_IndirectY.rawValue
         memory[0xA001] = 0x66
         memory[0x66] = 0xF0
@@ -215,8 +215,8 @@ struct XORTests {
         
         await cpu.runForTicks(5)
         #expect(cpu.A == 0xF8)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == true)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == true)
     }
 }
 

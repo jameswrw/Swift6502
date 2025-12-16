@@ -13,7 +13,7 @@ struct StackTests {
         let (cpu, memory) = initCPU()
         defer { memory.deallocate() }
         
-        cpu.X = 0x42
+        await cpu.setX(0x42)
         memory[0xA000] = Opcodes6502.TSX.rawValue
         
         await cpu.runForTicks(2)
@@ -26,7 +26,7 @@ struct StackTests {
         let (cpu, memory) = initCPU()
         defer { memory.deallocate() }
         
-        cpu.X = 0x42
+        await cpu.setX(0x42)
         memory[0xA000] = Opcodes6502.TXS.rawValue
 
         await cpu.runForTicks(2)
@@ -39,7 +39,7 @@ struct StackTests {
         let (cpu, memory) = initCPU()
         defer { memory.deallocate() }
         
-        cpu.A = 0x73
+        await cpu.setA(0x73)
         memory[0xA000] = Opcodes6502.PHA.rawValue
         memory[0x1FF] = 0x00
         

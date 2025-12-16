@@ -21,8 +21,8 @@ struct IncrementMemoryTests {
         await cpu.runForTicks(5)
         #expect(cpu.PC == 0xA002)
         #expect(memory[0x42] == 1)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == false)
 
         // Increment that sets the N flag.
         await cpu.reset()
@@ -33,8 +33,8 @@ struct IncrementMemoryTests {
         await cpu.runForTicks(5)
         #expect(cpu.PC == 0xA002)
         #expect(memory[0x42] == 0x80)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == true)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == true)
         
         // Increment that sets the Z flag.
         await cpu.reset()
@@ -45,8 +45,8 @@ struct IncrementMemoryTests {
         await cpu.runForTicks(5)
         #expect(cpu.PC == 0xA002)
         #expect(memory[0x42] == 0x00)
-        #expect(await cpu.readFlag(.Z) == true)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == true)
+        #expect( cpu.readFlag(.N) == false)
     }
     
     @Test func testINC_ZeroPageX() async throws {
@@ -56,53 +56,53 @@ struct IncrementMemoryTests {
         // Simple increment.
         memory[0xA000] = Opcodes6502.INC_ZeroPageX.rawValue
         memory[0xA001] = 0x70
-        cpu.X = 0x03
+        await cpu.setX(0x03)
         memory[0x73] = 0x00
         
         await cpu.runForTicks(6)
         #expect(cpu.PC == 0xA002)
         #expect(memory[0x73] == 0x1)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == false)
 
         // Increment that sets the N flag.
         await cpu.reset()
         memory[0xA000] = Opcodes6502.INC_ZeroPageX.rawValue
         memory[0xA001] = 0x70
-        cpu.X = 0x03
+        await cpu.setX(0x03)
         memory[0x73] = 0x7F
 
         await cpu.runForTicks(6)
         #expect(cpu.PC == 0xA002)
         #expect(memory[0x73] == 0x80)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == true)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == true)
         
         // Increment that sets the Z flag.
         await cpu.reset()
         memory[0xA000] = Opcodes6502.INC_ZeroPageX.rawValue
         memory[0xA001] = 0x70
-        cpu.X = 0x03
+        await cpu.setX(0x03)
         memory[0x73] = 0xFF
 
         await cpu.runForTicks(6)
         #expect(cpu.PC == 0xA002)
         #expect(memory[0x73] == 0x00)
-        #expect(await cpu.readFlag(.Z) == true)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == true)
+        #expect( cpu.readFlag(.N) == false)
         
         // Increment that checks that (opcode argument + X) wraps around.
         await cpu.reset()
         memory[0xA000] = Opcodes6502.INC_ZeroPageX.rawValue
         memory[0xA001] = 0xFF
-        cpu.X = 0x74
+        await cpu.setX(0x74)
         memory[0x73] = 0x00
         
         await cpu.runForTicks(6)
         #expect(cpu.PC == 0xA002)
         #expect(memory[0x73] == 0x01)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == false)
         
     }
     
@@ -119,8 +119,8 @@ struct IncrementMemoryTests {
         await cpu.runForTicks(6)
         #expect(cpu.PC == 0xA003)
         #expect(memory[0x1973] == 1)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == false)
 
         // Increment that sets the N flag.
         await cpu.reset()
@@ -132,8 +132,8 @@ struct IncrementMemoryTests {
         await cpu.runForTicks(6)
         #expect(cpu.PC == 0xA003)
         #expect(memory[0x1973] == 0x80)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == true)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == true)
         
         // Increment that sets the Z flag.
         await cpu.reset()
@@ -145,8 +145,8 @@ struct IncrementMemoryTests {
         await cpu.runForTicks(6)
         #expect(cpu.PC == 0xA003)
         #expect(memory[0x1973] == 0x00)
-        #expect(await cpu.readFlag(.Z) == true)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == true)
+        #expect( cpu.readFlag(.N) == false)
     }
     
     @Test func testINC_AbsoluteX() async throws {
@@ -157,55 +157,55 @@ struct IncrementMemoryTests {
         memory[0xA000] = Opcodes6502.INC_AbsoluteX.rawValue
         memory[0xA001] = 0x00
         memory[0xA002] = 0xF0
-        cpu.X = 0x0D
+        await cpu.setX(0x0D)
         memory[0xF00D] = 0x00
         
         await cpu.runForTicks(7)
         #expect(cpu.PC == 0xA003)
         #expect(memory[0xF00D] == 1)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == false)
 
         // Increment that sets the N flag.
         await cpu.reset()
         memory[0xA000] = Opcodes6502.INC_AbsoluteX.rawValue
         memory[0xA001] = 0x00
         memory[0xA002] = 0xF0
-        cpu.X = 0x0D
+        await cpu.setX(0x0D)
         memory[0xF00D] = 0x7F
 
         await cpu.runForTicks(7)
         #expect(cpu.PC == 0xA003)
         #expect(memory[0xF00D] == 0x80)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == true)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == true)
         
         // Increment that sets the Z flag.
         await cpu.reset()
         memory[0xA000] = Opcodes6502.INC_AbsoluteX.rawValue
         memory[0xA001] = 0x00
         memory[0xA002] = 0xF0
-        cpu.X = 0x0D
+        await cpu.setX(0x0D)
         memory[0xF00D] = 0xFF
 
         await cpu.runForTicks(7)
         #expect(cpu.PC == 0xA003)
         #expect(memory[0xF00D] == 0x00)
-        #expect(await cpu.readFlag(.Z) == true)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == true)
+        #expect( cpu.readFlag(.N) == false)
         
         // Increment that checks that (opcode argument + X) wraps around.
         await cpu.reset()
         memory[0xA000] = Opcodes6502.INC_AbsoluteX.rawValue
         memory[0xA001] = 0xFF
         memory[0xA002] = 0xFF
-        cpu.X = 0x12
+        await cpu.setX(0x12)
         memory[0x11] = 0x00
         
         await cpu.runForTicks(7)
         #expect(cpu.PC == 0xA003)
         #expect(memory[0x11] == 0x01)
-        #expect(await cpu.readFlag(.Z) == false)
-        #expect(await cpu.readFlag(.N) == false)
+        #expect( cpu.readFlag(.Z) == false)
+        #expect( cpu.readFlag(.N) == false)
     }
 }

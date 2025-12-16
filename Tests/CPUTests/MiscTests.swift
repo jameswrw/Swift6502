@@ -16,11 +16,18 @@ struct MiscTests {
         memory[0xA000] = Opcodes6502.NOP.rawValue
 
         await cpu.runForTicks(2)
-        #expect(cpu.A == 0)
-        #expect(cpu.X == 0)
-        #expect(cpu.Y == 0)
-        #expect(cpu.SP == 0xFF)
-        #expect(cpu.PC == 0xA001)
-        #expect(cpu.F == Flags.One.rawValue | Flags.I.rawValue)
+        let a = await cpu.A
+        let x = await cpu.X
+        let y = await cpu.Y
+        let sp = await cpu.SP
+        let pc = await cpu.PC
+        let f = await cpu.F
+
+        #expect(a == 0)
+        #expect(x == 0)
+        #expect(y == 0)
+        #expect(sp == 0xFF)
+        #expect(pc == 0xA001)
+        #expect(f == Flags.One.rawValue | Flags.I.rawValue)
     }
 }

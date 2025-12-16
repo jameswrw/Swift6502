@@ -34,28 +34,33 @@ struct AddHexTests {
                 // It's tempting to do something like 'await cpu.readFlag(.Z) && (hex_ij == 0x00)'
                 // It doesn't work because short circuiting leads to 'false == <not evaluated>', and
                 // #expected doesn't like that.
+                let zFlag = await cpu.readFlag(.Z)
+                let nFlag = await cpu.readFlag(.N)
+                let cFlag = await cpu.readFlag(.C)
+                let vFlag = await cpu.readFlag(.V)
+
                 if result == 0x00 {
-                    #expect(await cpu.readFlag(.Z))
+                    #expect(zFlag)
                 } else {
-                    #expect(await !cpu.readFlag(.Z))
+                    #expect(!zFlag)
                 }
                 
                 if result & 0x80 != 0 {
-                    #expect(await cpu.readFlag(.N))
+                    #expect(nFlag)
                 } else {
-                    #expect(await !cpu.readFlag(.N))
+                    #expect(!nFlag)
                 }
                 
                 if UInt16(i) + UInt16(j) + (setCarryFlag ? 1 : 0) > 0xFF {
-                    #expect(await cpu.readFlag(.C))
+                    #expect(cFlag)
                 } else {
-                    #expect(await !cpu.readFlag(.C))
+                    #expect(!cFlag)
                 }
                 
                 if (i ^ result) & (j ^ result) & 0x80 != 0 {
-                    #expect(await cpu.readFlag(.V))
+                    #expect(vFlag)
                 } else {
-                    #expect(await !cpu.readFlag(.V))
+                    #expect(!vFlag)
                 }
             }
         }

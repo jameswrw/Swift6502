@@ -15,7 +15,7 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.A = 0x66
+            await cpu.setA(0x66)
             memory[0xA000] = Opcodes6502.STA_ZeroPage.rawValue
             memory[0xA001] = 0x42
             
@@ -28,8 +28,8 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.A = 0x22
-            cpu.X = 0x10
+            await cpu.setA(0x22)
+            await cpu.setX(0x10)
             memory[0xA000] = Opcodes6502.STA_ZeroPageX.rawValue
             memory[0xA001] = 0x55
 
@@ -42,7 +42,7 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.A = 0x28
+            await cpu.setA(0x28)
             memory[0xA000] = Opcodes6502.STA_Absolute.rawValue
             memory[0xA001] = 0x73
             memory[0xA002] = 0x19
@@ -56,8 +56,8 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.A = 0x32
-            cpu.X = 0x20
+            await cpu.setA(0x32)
+            await cpu.setX(0x20)
             memory[0xA000] = Opcodes6502.STA_AbsoluteX.rawValue
             memory[0xA001] = 0x73
             memory[0xA002] = 0x19
@@ -71,8 +71,8 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.A = 0x64
-            cpu.Y = 0x10
+            await cpu.setA(0x64)
+            await cpu.setY(0x10)
             memory[0xA000] = Opcodes6502.STA_AbsoluteY.rawValue
             memory[0xA001] = 0x04
             memory[0xA002] = 0x20
@@ -86,8 +86,8 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.A = 0xBC
-            cpu.X = 0x10
+            await cpu.setA(0xBC)
+            await cpu.setX(0x10)
             memory[0xA000] = Opcodes6502.STA_IndirectX.rawValue
             memory[0xA001] = 0x50
             memory[0x60] = 0x80
@@ -102,8 +102,8 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.A = 0x40
-            cpu.Y = 0x20
+            await cpu.setA(0x40)
+            await cpu.setY(0x20)
             memory[0xA000] = Opcodes6502.STA_IndirectY.rawValue
             memory[0xA001] = 0x84
             memory[0x84] = 0x89
@@ -120,7 +120,7 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.X = 0x66
+            await cpu.setX(0x66)
             memory[0xA000] = Opcodes6502.STX_ZeroPage.rawValue
             memory[0xA001] = 0x42
             
@@ -133,8 +133,8 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.X = 0x22
-            cpu.Y = 0x10
+            await cpu.setX(0x22)
+            await cpu.setY(0x10)
             memory[0xA000] = Opcodes6502.STX_ZeroPageY.rawValue
             memory[0xA001] = 0x55
 
@@ -147,7 +147,7 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.X = 0x28
+            await cpu.setX(0x28)
             memory[0xA000] = Opcodes6502.STX_Absolute.rawValue
             memory[0xA001] = 0x73
             memory[0xA002] = 0x19
@@ -163,7 +163,7 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.Y = 0x66
+            await cpu.setY(0x66)
             memory[0xA000] = Opcodes6502.STY_ZeroPage.rawValue
             memory[0xA001] = 0x42
             
@@ -176,8 +176,8 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.X = 0x10
-            cpu.Y = 0x22
+            await cpu.setX(0x10)
+            await cpu.setY(0x22)
             memory[0xA000] = Opcodes6502.STY_ZeroPageX.rawValue
             memory[0xA001] = 0x55
 
@@ -190,7 +190,7 @@ struct StoreTests {
             let (cpu, memory) = initCPU()
             defer { memory.deallocate() }
             
-            cpu.Y = 0x28
+            await cpu.setY(0x28)
             memory[0xA000] = Opcodes6502.STY_Absolute.rawValue
             memory[0xA001] = 0x73
             memory[0xA002] = 0x19

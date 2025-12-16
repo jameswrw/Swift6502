@@ -15,12 +15,12 @@ struct CPXTests {
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
             await cpu.reset()
-            cpu.X = CompareTestInput.registerValue
+            await cpu.setX(CompareTestInput.registerValue)
             memory[0xA000] = Opcodes6502.CPX_Immediate.rawValue
             memory[0xA001] = CompareTestInput.memory
             
             await cpu.runForTicks(2)
-            testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
+            await testCMP(cpu: cpu, expected: compareTestOutputs[i])
         }
     }
     
@@ -30,13 +30,13 @@ struct CPXTests {
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
             await cpu.reset()
-            cpu.X = CompareTestInput.registerValue
+            await cpu.setX(CompareTestInput.registerValue)
             memory[0xA000] = Opcodes6502.CPX_ZeroPage.rawValue
             memory[0xA001] = 0x55
             memory[0x55] = CompareTestInput.memory
             
             await cpu.runForTicks(3)
-            testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
+            await testCMP(cpu: cpu, expected: compareTestOutputs[i])
         }
     }
     
@@ -46,14 +46,14 @@ struct CPXTests {
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
             await cpu.reset()
-            cpu.X = CompareTestInput.registerValue
+            await cpu.setX(CompareTestInput.registerValue)
             memory[0xA000] = Opcodes6502.CPX_Absolute.rawValue
             memory[0xA001] = 0x34
             memory[0xA002] = 0x12
             memory[0x1234] = CompareTestInput.memory
             
             await cpu.runForTicks(4)
-            testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
+            await testCMP(cpu: cpu, expected: compareTestOutputs[i])
         }
     }
 }

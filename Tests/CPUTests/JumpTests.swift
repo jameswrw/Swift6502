@@ -24,7 +24,7 @@ struct JumpTests {
         
         await cpu.runForTicks(2)
         #expect(cpu.A == 0xAA)
-        #expect(await cpu.readFlag(.N) == true)
+        #expect( cpu.readFlag(.N) == true)
     }
     
     @Test func testJMP_Indirect() async throws {

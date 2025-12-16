@@ -16,7 +16,7 @@
 //  #expect(x == 0x12)
 //
 // Setting values is worse:
-//  cpu.X = 0x34
+//  await cpu.setX(0x34)
 //
 // becomes:
 // await cpu.setX(0x34)

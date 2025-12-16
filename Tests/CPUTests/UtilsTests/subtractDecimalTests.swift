@@ -36,26 +36,30 @@ struct SubtractDecimalTests {
                         var dec_ij = Int16(dec_j) - Int16(dec_i) - (setCarryFlag ? 0 : 1)
                         let hex_ij = await cpu.subtractDecimal(hex_i, from: hex_j)
                         
+                        let cFlag = await cpu.readFlag(.C)
+                        let zFlag = await cpu.readFlag(.Z)
+                        let nFlag = await cpu.readFlag(.N)
+
                         if dec_ij < 0 {
                             dec_ij += 100
-                            #expect(await cpu.readFlag(.C))
+                            #expect(cFlag)
                         } else {
-                            #expect(await !cpu.readFlag(.C))
+                            #expect(!cFlag)
                         }
 
                         // It's tempting to do something like 'await cpu.readFlag(.Z) && (hex_ij == 0x00)'
                         // It doesn't work because short ciruiting leads to 'false == <not evaluated>', and
                         // #expected doesn't like that.
                         if hex_ij == 0x00 {
-                            #expect(await cpu.readFlag(.Z))
+                            #expect(zFlag)
                         } else {
-                            #expect(await !cpu.readFlag(.Z))
+                            #expect(!zFlag)
                         }
                         
                         if hex_ij & 0x80 != 0 {
-                            #expect(await cpu.readFlag(.N))
+                            #expect(nFlag)
                         } else {
-                            #expect(await !cpu.readFlag(.N))
+                            #expect(!nFlag)
                         }
 
                         let bcdResult = String(hex_ij, radix: 16)

@@ -42,16 +42,16 @@ struct SBCDHexTests {
             for payload in payloads {
                 await cpu.reset()
                 useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
-                cpu.A = payload.initialA
+                await cpu.setA(payload.initialA)
                 memory[0xA000] = Opcodes6502.SBC_Immediate.rawValue
                 memory[0xA001] = payload.operand
                 
                 await cpu.runForTicks(2)
                 #expect(cpu.A == payload.result)
-                #expect(await cpu.readFlag(.Z) == payload.Z)
-                #expect(await cpu.readFlag(.N) == payload.N)
-                #expect(await cpu.readFlag(.C) == payload.C)
-                #expect(await cpu.readFlag(.V) == payload.V)
+                #expect( cpu.readFlag(.Z) == payload.Z)
+                #expect( cpu.readFlag(.N) == payload.N)
+                #expect( cpu.readFlag(.C) == payload.C)
+                #expect( cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -67,17 +67,17 @@ struct SBCDHexTests {
             for payload in payloads {
                 await cpu.reset()
                 useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
-                cpu.A = payload.initialA
+                await cpu.setA(payload.initialA)
                 memory[0xA000] = Opcodes6502.SBC_ZeroPage.rawValue
                 memory[0xA001] = 0x42
                 memory[0x42] = payload.operand
                 
                 await cpu.runForTicks(3)
                 #expect(cpu.A == payload.result)
-                #expect(await cpu.readFlag(.Z) == payload.Z)
-                #expect(await cpu.readFlag(.N) == payload.N)
-                #expect(await cpu.readFlag(.C) == payload.C)
-                #expect(await cpu.readFlag(.V) == payload.V)
+                #expect( cpu.readFlag(.Z) == payload.Z)
+                #expect( cpu.readFlag(.N) == payload.N)
+                #expect( cpu.readFlag(.C) == payload.C)
+                #expect( cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -94,18 +94,18 @@ struct SBCDHexTests {
             for payload in payloads {
                 await cpu.reset()
                 useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
-                cpu.A = payload.initialA
-                cpu.X = 0x20
+                await cpu.setA(payload.initialA)
+                await cpu.setX(0x20)
                 memory[0xA000] = Opcodes6502.SBC_ZeroPageX.rawValue
                 memory[0xA001] = 0x42
                 memory[0x62] = payload.operand
                 
                 await cpu.runForTicks(4)
                 #expect(cpu.A == payload.result)
-                #expect(await cpu.readFlag(.Z) == payload.Z)
-                #expect(await cpu.readFlag(.N) == payload.N)
-                #expect(await cpu.readFlag(.C) == payload.C)
-                #expect(await cpu.readFlag(.V) == payload.V)
+                #expect( cpu.readFlag(.Z) == payload.Z)
+                #expect( cpu.readFlag(.N) == payload.N)
+                #expect( cpu.readFlag(.C) == payload.C)
+                #expect( cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -122,7 +122,7 @@ struct SBCDHexTests {
             for payload in payloads {
                 await cpu.reset()
                 useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
-                cpu.A = payload.initialA
+                await cpu.setA(payload.initialA)
                 memory[0xA000] = Opcodes6502.SBC_Absolute.rawValue
                 memory[0xA001] = 0x34
                 memory[0xA002] = 0x12
@@ -130,10 +130,10 @@ struct SBCDHexTests {
                 
                 await cpu.runForTicks(4)
                 #expect(cpu.A == payload.result)
-                #expect(await cpu.readFlag(.Z) == payload.Z)
-                #expect(await cpu.readFlag(.N) == payload.N)
-                #expect(await cpu.readFlag(.C) == payload.C)
-                #expect(await cpu.readFlag(.V) == payload.V)
+                #expect( cpu.readFlag(.Z) == payload.Z)
+                #expect( cpu.readFlag(.N) == payload.N)
+                #expect( cpu.readFlag(.C) == payload.C)
+                #expect( cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -150,8 +150,8 @@ struct SBCDHexTests {
             for payload in payloads {
                 await cpu.reset()
                 useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
-                cpu.A = payload.initialA
-                cpu.X = 0x20
+                await cpu.setA(payload.initialA)
+                await cpu.setX(0x20)
                 memory[0xA000] = Opcodes6502.SBC_AbsoluteX.rawValue
                 memory[0xA001] = 0x34
                 memory[0xA002] = 0x12
@@ -159,10 +159,10 @@ struct SBCDHexTests {
                 
                 await cpu.runForTicks(4)
                 #expect(cpu.A == payload.result)
-                #expect(await cpu.readFlag(.Z) == payload.Z)
-                #expect(await cpu.readFlag(.N) == payload.N)
-                #expect(await cpu.readFlag(.C) == payload.C)
-                #expect(await cpu.readFlag(.V) == payload.V)
+                #expect( cpu.readFlag(.Z) == payload.Z)
+                #expect( cpu.readFlag(.N) == payload.N)
+                #expect( cpu.readFlag(.C) == payload.C)
+                #expect( cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -170,8 +170,8 @@ struct SBCDHexTests {
         // Test crossing page boundary adds a tick.
         await cpu.reset()
         await cpu.setFlag(.C)
-        cpu.A = 0x52
-        cpu.X = 0x20
+        await cpu.setA(0x52)
+        await cpu.setX(0x20)
         memory[0xA000] = Opcodes6502.SBC_AbsoluteX.rawValue
         memory[0xA001] = 0xF0
         memory[0xA002] = 0x56
@@ -179,10 +179,10 @@ struct SBCDHexTests {
         
         await cpu.runForTicks(5)
         #expect(cpu.A == 0x20)
-        #expect(await !cpu.readFlag(.Z))
-        #expect(await !cpu.readFlag(.N))
-        #expect(await cpu.readFlag(.C))
-        #expect(await !cpu.readFlag(.V))
+        #expect( !cpu.readFlag(.Z))
+        #expect( !cpu.readFlag(.N))
+        #expect( cpu.readFlag(.C))
+        #expect( !cpu.readFlag(.V))
     }
     
     @Test func testSBC_AbsoluteY() async throws {
@@ -196,8 +196,8 @@ struct SBCDHexTests {
             for payload in payloads {
                 await cpu.reset()
                 useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
-                cpu.A = payload.initialA
-                cpu.Y = 0x20
+                await cpu.setA(payload.initialA)
+                await cpu.setY(0x20)
                 memory[0xA000] = Opcodes6502.SBC_AbsoluteY.rawValue
                 memory[0xA001] = 0x34
                 memory[0xA002] = 0x12
@@ -205,10 +205,10 @@ struct SBCDHexTests {
                 
                 await cpu.runForTicks(4)
                 #expect(cpu.A == payload.result)
-                #expect(await cpu.readFlag(.Z) == payload.Z)
-                #expect(await cpu.readFlag(.N) == payload.N)
-                #expect(await cpu.readFlag(.C) == payload.C)
-                #expect(await cpu.readFlag(.V) == payload.V)
+                #expect( cpu.readFlag(.Z) == payload.Z)
+                #expect( cpu.readFlag(.N) == payload.N)
+                #expect( cpu.readFlag(.C) == payload.C)
+                #expect( cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -216,8 +216,8 @@ struct SBCDHexTests {
         // Test crossing page boundary adds a tick.
         await cpu.reset()
         await cpu.setFlag(.C)
-        cpu.A = 0x52
-        cpu.Y = 0x20
+        await cpu.setA(0x52)
+        await cpu.setY(0x20)
         memory[0xA000] = Opcodes6502.SBC_AbsoluteY.rawValue
         memory[0xA001] = 0xF0
         memory[0xA002] = 0x56
@@ -225,10 +225,10 @@ struct SBCDHexTests {
         
         await cpu.runForTicks(5)
         #expect(cpu.A == 0x20)
-        #expect(await !cpu.readFlag(.Z))
-        #expect(await !cpu.readFlag(.N))
-        #expect(await cpu.readFlag(.C))
-        #expect(await !cpu.readFlag(.V))
+        #expect( !cpu.readFlag(.Z))
+        #expect( !cpu.readFlag(.N))
+        #expect( cpu.readFlag(.C))
+        #expect( !cpu.readFlag(.V))
     }
     
     @Test func testSBC_IndirectX() async throws {
@@ -242,8 +242,8 @@ struct SBCDHexTests {
             for payload in payloads {
                 await cpu.reset()
                 useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
-                cpu.A = payload.initialA
-                cpu.X = 0x20
+                await cpu.setA(payload.initialA)
+                await cpu.setX(0x20)
                 memory[0xA000] = Opcodes6502.SBC_IndirectX.rawValue
                 memory[0xA001] = 0x34
                 memory[0x54] = 0x78
@@ -252,10 +252,10 @@ struct SBCDHexTests {
                 
                 await cpu.runForTicks(6)
                 #expect(cpu.A == payload.result)
-                #expect(await cpu.readFlag(.Z) == payload.Z)
-                #expect(await cpu.readFlag(.N) == payload.N)
-                #expect(await cpu.readFlag(.C) == payload.C)
-                #expect(await cpu.readFlag(.V) == payload.V)
+                #expect( cpu.readFlag(.Z) == payload.Z)
+                #expect( cpu.readFlag(.N) == payload.N)
+                #expect( cpu.readFlag(.C) == payload.C)
+                #expect( cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -272,8 +272,8 @@ struct SBCDHexTests {
             for payload in payloads {
                 await cpu.reset()
                 useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
-                cpu.A = payload.initialA
-                cpu.Y = 0x20
+                await cpu.setA(payload.initialA)
+                await cpu.setY(0x20)
                 memory[0xA000] = Opcodes6502.SBC_IndirectY.rawValue
                 memory[0xA001] = 0x34
                 memory[0x34] = 0x78
@@ -282,10 +282,10 @@ struct SBCDHexTests {
                 
                 await cpu.runForTicks(5)
                 #expect(cpu.A == payload.result)
-                #expect(await cpu.readFlag(.Z) == payload.Z)
-                #expect(await cpu.readFlag(.N) == payload.N)
-                #expect(await cpu.readFlag(.C) == payload.C)
-                #expect(await cpu.readFlag(.V) == payload.V)
+                #expect( cpu.readFlag(.Z) == payload.Z)
+                #expect( cpu.readFlag(.N) == payload.N)
+                #expect( cpu.readFlag(.C) == payload.C)
+                #expect( cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -293,8 +293,8 @@ struct SBCDHexTests {
         // Test crossing page boundary adds a tick.
         await cpu.reset()
         await cpu.setFlag(.C)
-        cpu.A = 0x56
-        cpu.Y = 0x20
+        await cpu.setA(0x56)
+        await cpu.setY(0x20)
         memory[0xA000] = Opcodes6502.SBC_IndirectY.rawValue
         memory[0xA001] = 0x52
         memory[0x52] = 0xF0
@@ -303,9 +303,9 @@ struct SBCDHexTests {
         
         await cpu.runForTicks(6)
         #expect(cpu.A == 0x14)
-        #expect(await !cpu.readFlag(.Z))
-        #expect(await !cpu.readFlag(.N))
-        #expect(await cpu.readFlag(.C))
-        #expect(await !cpu.readFlag(.V))
+        #expect( !cpu.readFlag(.Z))
+        #expect( !cpu.readFlag(.N))
+        #expect( cpu.readFlag(.C))
+        #expect( !cpu.readFlag(.V))
     }
 }
