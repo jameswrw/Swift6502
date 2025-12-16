@@ -20,7 +20,7 @@ struct interruptTests {
         cpu.pushByte(oldFlags)
         memory[0xA000] = Opcodes6502.RTI.rawValue
         
-        cpu.runForTicks(6)
+        await cpu.runForTicks(6)
         #expect(cpu.F == oldFlags)
         #expect(cpu.PC == 0x5678)
     }
@@ -32,7 +32,7 @@ struct interruptTests {
         memory[Int(cpu.irqVector)] = 0x00
         memory[Int(cpu.irqVector + 1)] = 0x20
         
-        cpu.runForTicks(7)
+        await cpu.runForTicks(7)
         #expect(cpu.PC == 0x2000)
     }
     
@@ -44,10 +44,10 @@ struct interruptTests {
         memory[Int(cpu.irqVector + 1)] = 0x20
         memory[0x2000] = Opcodes6502.RTI.rawValue
         
-        cpu.runForTicks(7)
+        await cpu.runForTicks(7)
         #expect(cpu.PC == 0x2000)
         
-        cpu.runForTicks(6)
+        await cpu.runForTicks(6)
         #expect(cpu.PC == 0xA002)
     }
 }

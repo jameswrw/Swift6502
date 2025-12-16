@@ -32,18 +32,18 @@ struct ADCHexTests {
             let payloads = (useCarry ? carryPayloads : noCarryPayloads)
             
             for payload in payloads {
-                cpu.reset()
-                useCarry ? cpu.setFlag(.C) : cpu.clearFlag(.C)
+                await cpu.reset()
+                useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
                 cpu.A = payload.initialA
                 memory[0xA000] = Opcodes6502.ADC_Immediate.rawValue
                 memory[0xA001] = payload.operand
                 
-                cpu.runForTicks(2)
+                await cpu.runForTicks(2)
                 #expect(cpu.A == payload.result)
-                #expect(cpu.readFlag(.Z) == payload.Z)
-                #expect(cpu.readFlag(.N) == payload.N)
-                #expect(cpu.readFlag(.C) == payload.C)
-                #expect(cpu.readFlag(.V) == payload.V)
+                #expect(await cpu.readFlag(.Z) == payload.Z)
+                #expect(await cpu.readFlag(.N) == payload.N)
+                #expect(await cpu.readFlag(.C) == payload.C)
+                #expect(await cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -57,19 +57,19 @@ struct ADCHexTests {
         for _ in 0...1 {
             let payloads = (useCarry ? carryPayloads : noCarryPayloads)
             for payload in payloads {
-                cpu.reset()
-                useCarry ? cpu.setFlag(.C) : cpu.clearFlag(.C)
+                await cpu.reset()
+                useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
                 cpu.A = payload.initialA
                 memory[0xA000] = Opcodes6502.ADC_ZeroPage.rawValue
                 memory[0xA001] = 0x42
                 memory[0x42] = payload.operand
                 
-                cpu.runForTicks(3)
+                await cpu.runForTicks(3)
                 #expect(cpu.A == payload.result)
-                #expect(cpu.readFlag(.Z) == payload.Z)
-                #expect(cpu.readFlag(.N) == payload.N)
-                #expect(cpu.readFlag(.C) == payload.C)
-                #expect(cpu.readFlag(.V) == payload.V)
+                #expect(await cpu.readFlag(.Z) == payload.Z)
+                #expect(await cpu.readFlag(.N) == payload.N)
+                #expect(await cpu.readFlag(.C) == payload.C)
+                #expect(await cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -84,20 +84,20 @@ struct ADCHexTests {
             let payloads = (useCarry ? carryPayloads : noCarryPayloads)
             
             for payload in payloads {
-                cpu.reset()
-                useCarry ? cpu.setFlag(.C) : cpu.clearFlag(.C)
+                await cpu.reset()
+                useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
                 cpu.A = payload.initialA
                 cpu.X = 0x20
                 memory[0xA000] = Opcodes6502.ADC_ZeroPageX.rawValue
                 memory[0xA001] = 0x42
                 memory[0x62] = payload.operand
                 
-                cpu.runForTicks(4)
+                await cpu.runForTicks(4)
                 #expect(cpu.A == payload.result)
-                #expect(cpu.readFlag(.Z) == payload.Z)
-                #expect(cpu.readFlag(.N) == payload.N)
-                #expect(cpu.readFlag(.C) == payload.C)
-                #expect(cpu.readFlag(.V) == payload.V)
+                #expect(await cpu.readFlag(.Z) == payload.Z)
+                #expect(await cpu.readFlag(.N) == payload.N)
+                #expect(await cpu.readFlag(.C) == payload.C)
+                #expect(await cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -112,20 +112,20 @@ struct ADCHexTests {
             let payloads = (useCarry ? carryPayloads : noCarryPayloads)
             
             for payload in payloads {
-                cpu.reset()
-                useCarry ? cpu.setFlag(.C) : cpu.clearFlag(.C)
+                await cpu.reset()
+                useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
                 cpu.A = payload.initialA
                 memory[0xA000] = Opcodes6502.ADC_Absolute.rawValue
                 memory[0xA001] = 0x34
                 memory[0xA002] = 0x12
                 memory[0x1234] = payload.operand
                 
-                cpu.runForTicks(4)
+                await cpu.runForTicks(4)
                 #expect(cpu.A == payload.result)
-                #expect(cpu.readFlag(.Z) == payload.Z)
-                #expect(cpu.readFlag(.N) == payload.N)
-                #expect(cpu.readFlag(.C) == payload.C)
-                #expect(cpu.readFlag(.V) == payload.V)
+                #expect(await cpu.readFlag(.Z) == payload.Z)
+                #expect(await cpu.readFlag(.N) == payload.N)
+                #expect(await cpu.readFlag(.C) == payload.C)
+                #expect(await cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -140,8 +140,8 @@ struct ADCHexTests {
             let payloads = (useCarry ? carryPayloads : noCarryPayloads)
             
             for payload in payloads {
-                cpu.reset()
-                useCarry ? cpu.setFlag(.C) : cpu.clearFlag(.C)
+                await cpu.reset()
+                useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
                 cpu.A = payload.initialA
                 cpu.X = 0x20
                 memory[0xA000] = Opcodes6502.ADC_AbsoluteX.rawValue
@@ -149,19 +149,19 @@ struct ADCHexTests {
                 memory[0xA002] = 0x12
                 memory[0x1254] = payload.operand
                 
-                cpu.runForTicks(4)
+                await cpu.runForTicks(4)
                 #expect(cpu.A == payload.result)
-                #expect(cpu.readFlag(.Z) == payload.Z)
-                #expect(cpu.readFlag(.N) == payload.N)
-                #expect(cpu.readFlag(.C) == payload.C)
-                #expect(cpu.readFlag(.V) == payload.V)
+                #expect(await cpu.readFlag(.Z) == payload.Z)
+                #expect(await cpu.readFlag(.N) == payload.N)
+                #expect(await cpu.readFlag(.C) == payload.C)
+                #expect(await cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
         
         // Test crossing page boundary adds a tick.
-        cpu.reset()
-        cpu.setFlag(.C)
+        await cpu.reset()
+        await cpu.setFlag(.C)
         cpu.A = 0x25
         cpu.X = 0x20
         memory[0xA000] = Opcodes6502.ADC_AbsoluteX.rawValue
@@ -169,12 +169,12 @@ struct ADCHexTests {
         memory[0xA002] = 0x56
         memory[0x5710] = 0x32
         
-        cpu.runForTicks(5)
+        await cpu.runForTicks(5)
         #expect(cpu.A == 0x58)
-        #expect(!cpu.readFlag(.Z))
-        #expect(!cpu.readFlag(.N))
-        #expect(!cpu.readFlag(.C))
-        #expect(!cpu.readFlag(.V))
+        #expect(await !cpu.readFlag(.Z))
+        #expect(await !cpu.readFlag(.N))
+        #expect(await !cpu.readFlag(.C))
+        #expect(await !cpu.readFlag(.V))
     }
     
     @Test func testADC_AbsoluteY() async throws {
@@ -186,8 +186,8 @@ struct ADCHexTests {
             let payloads = (useCarry ? carryPayloads : noCarryPayloads)
             
             for payload in payloads {
-                cpu.reset()
-                useCarry ? cpu.setFlag(.C) : cpu.clearFlag(.C)
+                await cpu.reset()
+                useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
                 cpu.A = payload.initialA
                 cpu.Y = 0x20
                 memory[0xA000] = Opcodes6502.ADC_AbsoluteY.rawValue
@@ -195,19 +195,19 @@ struct ADCHexTests {
                 memory[0xA002] = 0x12
                 memory[0x1254] = payload.operand
                 
-                cpu.runForTicks(4)
+                await cpu.runForTicks(4)
                 #expect(cpu.A == payload.result)
-                #expect(cpu.readFlag(.Z) == payload.Z)
-                #expect(cpu.readFlag(.N) == payload.N)
-                #expect(cpu.readFlag(.C) == payload.C)
-                #expect(cpu.readFlag(.V) == payload.V)
+                #expect(await cpu.readFlag(.Z) == payload.Z)
+                #expect(await cpu.readFlag(.N) == payload.N)
+                #expect(await cpu.readFlag(.C) == payload.C)
+                #expect(await cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
         
         // Test crossing page boundary adds a tick.
-        cpu.reset()
-        cpu.setFlag(.C)
+        await cpu.reset()
+        await cpu.setFlag(.C)
         cpu.A = 0x25
         cpu.Y = 0x20
         memory[0xA000] = Opcodes6502.ADC_AbsoluteY.rawValue
@@ -215,12 +215,12 @@ struct ADCHexTests {
         memory[0xA002] = 0x56
         memory[0x5710] = 0x32
         
-        cpu.runForTicks(5)
+        await cpu.runForTicks(5)
         #expect(cpu.A == 0x58)
-        #expect(!cpu.readFlag(.Z))
-        #expect(!cpu.readFlag(.N))
-        #expect(!cpu.readFlag(.C))
-        #expect(!cpu.readFlag(.V))
+        #expect(await !cpu.readFlag(.Z))
+        #expect(await !cpu.readFlag(.N))
+        #expect(await !cpu.readFlag(.C))
+        #expect(await !cpu.readFlag(.V))
     }
     
     @Test func testADC_IndirectX() async throws {
@@ -232,8 +232,8 @@ struct ADCHexTests {
             let payloads = (useCarry ? carryPayloads : noCarryPayloads)
             
             for payload in payloads {
-                cpu.reset()
-                useCarry ? cpu.setFlag(.C) : cpu.clearFlag(.C)
+                await cpu.reset()
+                useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
                 cpu.A = payload.initialA
                 cpu.X = 0x20
                 memory[0xA000] = Opcodes6502.ADC_IndirectX.rawValue
@@ -242,12 +242,12 @@ struct ADCHexTests {
                 memory[0x55] = 0x56
                 memory[0x5678] = payload.operand
                 
-                cpu.runForTicks(6)
+                await cpu.runForTicks(6)
                 #expect(cpu.A == payload.result)
-                #expect(cpu.readFlag(.Z) == payload.Z)
-                #expect(cpu.readFlag(.N) == payload.N)
-                #expect(cpu.readFlag(.C) == payload.C)
-                #expect(cpu.readFlag(.V) == payload.V)
+                #expect(await cpu.readFlag(.Z) == payload.Z)
+                #expect(await cpu.readFlag(.N) == payload.N)
+                #expect(await cpu.readFlag(.C) == payload.C)
+                #expect(await cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
@@ -262,8 +262,8 @@ struct ADCHexTests {
             let payloads = (useCarry ? carryPayloads : noCarryPayloads)
             
             for payload in payloads {
-                cpu.reset()
-                useCarry ? cpu.setFlag(.C) : cpu.clearFlag(.C)
+                await cpu.reset()
+                useCarry ? await cpu.setFlag(.C) : await cpu.clearFlag(.C)
                 cpu.A = payload.initialA
                 cpu.Y = 0x20
                 memory[0xA000] = Opcodes6502.ADC_IndirectY.rawValue
@@ -272,19 +272,19 @@ struct ADCHexTests {
                 memory[0x35] = 0x56
                 memory[0x5698] = payload.operand
                 
-                cpu.runForTicks(5)
+                await cpu.runForTicks(5)
                 #expect(cpu.A == payload.result)
-                #expect(cpu.readFlag(.Z) == payload.Z)
-                #expect(cpu.readFlag(.N) == payload.N)
-                #expect(cpu.readFlag(.C) == payload.C)
-                #expect(cpu.readFlag(.V) == payload.V)
+                #expect(await cpu.readFlag(.Z) == payload.Z)
+                #expect(await cpu.readFlag(.N) == payload.N)
+                #expect(await cpu.readFlag(.C) == payload.C)
+                #expect(await cpu.readFlag(.V) == payload.V)
             }
             useCarry.toggle()
         }
         
         // Test crossing page boundary adds a tick.
-        cpu.reset()
-        cpu.setFlag(.C)
+        await cpu.reset()
+        await cpu.setFlag(.C)
         cpu.A = 0x56
         cpu.Y = 0x20
         memory[0xA000] = Opcodes6502.ADC_IndirectY.rawValue
@@ -293,11 +293,11 @@ struct ADCHexTests {
         memory[0x56] = 0x88
         memory[0x8910] = 0x42
         
-        cpu.runForTicks(6)
+        await cpu.runForTicks(6)
         #expect(cpu.A == 0x99)
-        #expect(!cpu.readFlag(.Z))
-        #expect(cpu.readFlag(.N))
-        #expect(!cpu.readFlag(.C))
-        #expect(cpu.readFlag(.V))
+        #expect(await !cpu.readFlag(.Z))
+        #expect(await cpu.readFlag(.N))
+        #expect(await !cpu.readFlag(.C))
+        #expect(await cpu.readFlag(.V))
     }
 }

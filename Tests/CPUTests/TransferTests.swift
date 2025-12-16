@@ -16,32 +16,32 @@ struct TransferTests {
         cpu.A = 0x64
         memory[0xA000] = Opcodes6502.TAX.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0x64)
         #expect(cpu.X == 0x64)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         cpu.A = 0x00
         cpu.X = 0x12
         memory[0xA000] = Opcodes6502.TAX.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0)
         #expect(cpu.X == 0)
-        #expect(cpu.readFlag(.Z) == true)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == true)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         cpu.A = 0xFF
         memory[0xA000] = Opcodes6502.TAX.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0xFF)
         #expect(cpu.X == 0xFF)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == true)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == true)
     }
     
     @Test func testTXA() async throws {
@@ -51,33 +51,33 @@ struct TransferTests {
         cpu.X = 0x64
         memory[0xA000] = Opcodes6502.TXA.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0x64)
         #expect(cpu.X == 0x64)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         cpu.X = 0x00
         cpu.A = 0x12
         memory[0xA000] = Opcodes6502.TXA.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0)
         #expect(cpu.X == 0)
-        #expect(cpu.readFlag(.Z) == true)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == true)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         cpu.A = 0x12
         cpu.X = 0xFF
         memory[0xA000] = Opcodes6502.TXA.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0xFF)
         #expect(cpu.X == 0xFF)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == true)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == true)
     }
     
     @Test func testTAY() async throws {
@@ -87,32 +87,32 @@ struct TransferTests {
         cpu.A = 0x64
         memory[0xA000] = Opcodes6502.TAY.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0x64)
         #expect(cpu.Y == 0x64)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         cpu.A = 0x00
         cpu.Y = 0x12
         memory[0xA000] = Opcodes6502.TAY.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0)
         #expect(cpu.Y == 0)
-        #expect(cpu.readFlag(.Z) == true)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == true)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         cpu.A = 0xFF
         memory[0xA000] = Opcodes6502.TAY.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0xFF)
         #expect(cpu.Y == 0xFF)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == true)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == true)
     }
     
     @Test func testTYA() async throws {
@@ -122,32 +122,32 @@ struct TransferTests {
         cpu.Y = 0x64
         memory[0xA000] = Opcodes6502.TYA.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0x64)
         #expect(cpu.Y == 0x64)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         cpu.Y = 0x00
         cpu.A = 0x12
         memory[0xA000] = Opcodes6502.TYA.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0)
         #expect(cpu.Y == 0)
-        #expect(cpu.readFlag(.Z) == true)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == true)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         cpu.A = 0x12
         cpu.Y = 0xFF
         memory[0xA000] = Opcodes6502.TYA.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0xFF)
         #expect(cpu.Y == 0xFF)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == true)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == true)
     }
 }

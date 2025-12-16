@@ -14,14 +14,17 @@ struct TestLDY {
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
-            cpu.reset()
+            await cpu.reset()
             memory[0xA000] = Opcodes6502.LDY_Immediate.rawValue
             memory[0xA001] = testOutput.value
             
-            cpu.runForTicks(2)
+            await cpu.runForTicks(2)
             #expect(cpu.Y == testOutput.value)
-            #expect(cpu.readFlag(.Z) == testOutput.Z)
-            #expect(cpu.readFlag(.N) == testOutput.N)
+            
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
     }
     
@@ -30,15 +33,18 @@ struct TestLDY {
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
-            cpu.reset()
+            await cpu.reset()
             memory[0xA000] = Opcodes6502.LDY_ZeroPage.rawValue
             memory[0xA001] = 0x42
             memory[0x42] = testOutput.value
             
-            cpu.runForTicks(3)
+            await cpu.runForTicks(3)
             #expect(cpu.Y == testOutput.value)
-            #expect(cpu.readFlag(.Z) == testOutput.Z)
-            #expect(cpu.readFlag(.N) == testOutput.N)
+            
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
     }
     
@@ -47,16 +53,19 @@ struct TestLDY {
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
-            cpu.reset()
+            await cpu.reset()
             cpu.X = 0x10
             memory[0xA000] = Opcodes6502.LDY_ZeroPageX.rawValue
             memory[0xA001] = 0x42
             memory[0x52] = testOutput.value
             
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             #expect(cpu.Y == testOutput.value)
-            #expect(cpu.readFlag(.Z) == testOutput.Z)
-            #expect(cpu.readFlag(.N) == testOutput.N)
+            
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
     }
     
@@ -65,16 +74,19 @@ struct TestLDY {
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
-            cpu.reset()
+            await cpu.reset()
             memory[0xA000] = Opcodes6502.LDY_Absolute.rawValue
             memory[0xA001] = 0x73
             memory[0xA002] = 0x19
             memory[0x1973] = testOutput.value
             
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             #expect(cpu.Y == testOutput.value)
-            #expect(cpu.readFlag(.Z) == testOutput.Z)
-            #expect(cpu.readFlag(.N) == testOutput.N)
+            
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
     }
     
@@ -83,7 +95,7 @@ struct TestLDY {
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
-            cpu.reset()
+            await cpu.reset()
             cpu.X = 0x20
             memory[0xA000] = Opcodes6502.LDY_AbsoluteX.rawValue
             memory[0xA001] = 0x73
@@ -91,15 +103,18 @@ struct TestLDY {
             memory[0x1993] = testOutput.value
             
             let oldTickcount = cpu.tickcount
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             #expect(cpu.tickcount - oldTickcount == 4)
             #expect(cpu.Y == testOutput.value)
-            #expect(cpu.readFlag(.Z) == testOutput.Z)
-            #expect(cpu.readFlag(.N) == testOutput.N)
+            
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
         
         // Bonus page boundary crossing test.
-        cpu.reset()
+        await cpu.reset()
         cpu.X = 0x20
         memory[0xA000] = Opcodes6502.LDY_AbsoluteX.rawValue
         memory[0xA001] = 0xF0
@@ -107,10 +122,13 @@ struct TestLDY {
         memory[0x1A10] = 0x99
         
         let oldTickcount = cpu.tickcount
-        cpu.runForTicks(5)
+        await cpu.runForTicks(5)
         #expect(cpu.tickcount - oldTickcount == 5)
         #expect(cpu.Y == 0x99)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == true)
+        
+        let zFlag = await cpu.readFlag(.Z)
+        let nFlag = await cpu.readFlag(.N)
+        #expect(await zFlag == false)
+        #expect(await nFlag == true)
     }
 }

@@ -30,87 +30,87 @@ struct BranchTests {
         memory[0xA002] = 0x12
         memory[0x1234] = opcode.rawValue
         memory[0x1235] = 0x10
-        branchIfFlagSet ? cpu.setFlag(flag) : cpu.clearFlag(flag)
+        branchIfFlagSet ? await cpu.setFlag(flag) : await cpu.clearFlag(flag)
 
         // JMP to 0x1234
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x1234)
         
         var oldTickcount = cpu.tickcount
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x1246)
         #expect(cpu.tickcount == oldTickcount + 3)
 
         // Simple branch backwards.
-        cpu.reset()
+        await cpu.reset()
         memory[0xA000] = Opcodes6502.JMP_Absolute.rawValue
         memory[0xA001] = 0x34
         memory[0xA002] = 0x12
         memory[0x1234] = opcode.rawValue
         memory[0x1235] = 0xF0   // -0x10
-        branchIfFlagSet ? cpu.setFlag(flag) : cpu.clearFlag(flag)
+        branchIfFlagSet ? await cpu.setFlag(flag) : await cpu.clearFlag(flag)
         
         // JMP to 0x1234
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x1234)
         
         oldTickcount = cpu.tickcount
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x1226)
         #expect(cpu.tickcount == oldTickcount + 3)
         
         // Branch forwards with a page change.
-        cpu.reset()
+        await cpu.reset()
         memory[0xA000] = Opcodes6502.JMP_Absolute.rawValue
         memory[0xA001] = 0xF0
         memory[0xA002] = 0x10
         memory[0x10F0] = opcode.rawValue
         memory[0x10F1] = 0x10
-        branchIfFlagSet ? cpu.setFlag(flag) : cpu.clearFlag(flag)
+        branchIfFlagSet ? await cpu.setFlag(flag) : await cpu.clearFlag(flag)
 
         // JMP to 0x10F0
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x10F0)
         
         let ticks = (opcode == .BVC ? 3 : 4)
         oldTickcount = cpu.tickcount
-        cpu.runForTicks(ticks)
+        await cpu.runForTicks(ticks)
         #expect(cpu.PC == 0x1102)
         #expect(cpu.tickcount == oldTickcount + ticks)
         
         // Branch backwards with a page change.
-        cpu.reset()
+        await cpu.reset()
         memory[0xA000] = Opcodes6502.JMP_Absolute.rawValue
         memory[0xA001] = 0x10
         memory[0xA002] = 0x10
         memory[0x1010] = opcode.rawValue
         memory[0x1011] = 0xE0   // -0x20
-        branchIfFlagSet ? cpu.setFlag(flag) : cpu.clearFlag(flag)
+        branchIfFlagSet ? await cpu.setFlag(flag) : await cpu.clearFlag(flag)
 
         // JMP to 0x1010
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x1010)
         
         oldTickcount = cpu.tickcount
-        cpu.runForTicks(ticks)
+        await cpu.runForTicks(ticks)
         #expect(cpu.PC == 0xFF2)
         #expect(cpu.tickcount == oldTickcount + ticks)
         
         // Test no branch if flag state is different from branchIfFlagSet.
-        cpu.reset()
+        await cpu.reset()
         memory[0xA000] = Opcodes6502.JMP_Absolute.rawValue
         memory[0xA001] = 0x34
         memory[0xA002] = 0x12
         memory[0x1234] = opcode.rawValue
         memory[0x1235] = 0x10
-        branchIfFlagSet ? cpu.clearFlag(flag) : cpu.setFlag(flag)
+        branchIfFlagSet ? await cpu.clearFlag(flag) : await cpu.setFlag(flag)
 
         // JMP to 0x1234
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x1234)
         
         oldTickcount = cpu.tickcount
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.PC == 0x1236)
         #expect(cpu.tickcount == oldTickcount + 2)
     }

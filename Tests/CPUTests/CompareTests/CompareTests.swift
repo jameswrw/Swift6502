@@ -46,8 +46,14 @@ internal let compareTestOutputs = [
     CompareTestOutput(C: true, Z: true, N: false)
 ]
 
-internal func testCMP(cpu: CPU6502, CompareTestOutput: CompareTestOutput) {
-    #expect(cpu.readFlag(.C) == CompareTestOutput.C)
-    #expect(cpu.readFlag(.Z) == CompareTestOutput.Z)
-    #expect(cpu.readFlag(.N) == CompareTestOutput.N)
+internal func testCMP(cpu: CPU6502, expected: CompareTestOutput) async {
+    
+    let cFlag = await cpu.readFlag(.C)
+    let zFlag = await cpu.readFlag(.Z)
+    let nFlag = await cpu.readFlag(.N)
+
+    #expect(cFlag == expected.C)
+    #expect(zFlag == expected.Z)
+    #expect(nFlag == expected.N)
 }
+

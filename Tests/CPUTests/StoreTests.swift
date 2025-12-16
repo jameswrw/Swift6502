@@ -20,7 +20,7 @@ struct StoreTests {
             memory[0xA001] = 0x42
             
             #expect(memory[0x42] == 0xFF)
-            cpu.runForTicks(3)
+            await cpu.runForTicks(3)
             #expect(memory[0x42] == 0x66)
         }
         
@@ -34,7 +34,7 @@ struct StoreTests {
             memory[0xA001] = 0x55
 
             #expect(memory[0x65] == 0xFF)
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             #expect(memory[0x65] == 0x22)
         }
         
@@ -48,7 +48,7 @@ struct StoreTests {
             memory[0xA002] = 0x19
             
             #expect(memory[0x1973] == 0xFF)
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             #expect(memory[0x1973] == 0x28)
         }
         
@@ -63,7 +63,7 @@ struct StoreTests {
             memory[0xA002] = 0x19
             
             #expect(memory[0x1993] == 0xFF)
-            cpu.runForTicks(5)
+            await cpu.runForTicks(5)
             #expect(memory[0x1993] == 0x32)
         }
         
@@ -78,7 +78,7 @@ struct StoreTests {
             memory[0xA002] = 0x20
             
             #expect(memory[0x2014] == 0xFF)
-            cpu.runForTicks(5)
+            await cpu.runForTicks(5)
             #expect(memory[0x2014] == 0x64)
         }
         
@@ -94,7 +94,7 @@ struct StoreTests {
             memory[0x61] = 0x19
             
             #expect(memory[0x1980] == 0xFF)
-            cpu.runForTicks(6)
+            await cpu.runForTicks(6)
             #expect(memory[0x1980] == 0xBC)
         }
         
@@ -110,7 +110,7 @@ struct StoreTests {
             memory[0x85] = 0x20
 
             #expect(memory[0x20A9] == 0xFF)
-            cpu.runForTicks(6)
+            await cpu.runForTicks(6)
             #expect(memory[0x20A9] == 0x40)
         }
     }
@@ -125,7 +125,7 @@ struct StoreTests {
             memory[0xA001] = 0x42
             
             #expect(memory[0x42] == 0xFF)
-            cpu.runForTicks(3)
+            await cpu.runForTicks(3)
             #expect(memory[0x42] == 0x66)
         }
         
@@ -139,7 +139,7 @@ struct StoreTests {
             memory[0xA001] = 0x55
 
             #expect(memory[0x65] == 0xFF)
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             #expect(memory[0x65] == 0x22)
         }
         
@@ -153,7 +153,7 @@ struct StoreTests {
             memory[0xA002] = 0x19
             
             #expect(memory[0x1973] == 0xFF)
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             #expect(memory[0x1973] == 0x28)
         }
     }
@@ -168,7 +168,7 @@ struct StoreTests {
             memory[0xA001] = 0x42
             
             #expect(memory[0x42] == 0xFF)
-            cpu.runForTicks(3)
+            await cpu.runForTicks(3)
             #expect(memory[0x42] == 0x66)
         }
         
@@ -182,7 +182,7 @@ struct StoreTests {
             memory[0xA001] = 0x55
 
             #expect(memory[0x65] == 0xFF)
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             #expect(memory[0x65] == 0x22)
         }
         
@@ -196,7 +196,7 @@ struct StoreTests {
             memory[0xA002] = 0x19
             
             #expect(memory[0x1973] == 0xFF)
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             #expect(memory[0x1973] == 0x28)
         }
     }

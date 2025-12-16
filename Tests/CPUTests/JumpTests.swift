@@ -19,12 +19,12 @@ struct JumpTests {
         memory[0x1234] = Opcodes6502.LDA_Immediate.rawValue
         memory[0x1235] = 0xAA
         
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x1234)
         
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0xAA)
-        #expect(cpu.readFlag(.N) == true)
+        #expect(await cpu.readFlag(.N) == true)
     }
     
     @Test func testJMP_Indirect() async throws {
@@ -39,10 +39,10 @@ struct JumpTests {
         memory[0x5678] = Opcodes6502.LDA_Immediate.rawValue
         memory[0x5679] = 0x42
         
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x5678)
         
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0x42)
         #expect(cpu.F == Flags.One.rawValue | Flags.I.rawValue)
     }
@@ -64,17 +64,17 @@ struct JumpTests {
         memory[0x5678] = Opcodes6502.RTS.rawValue
 
         // JMP 0x1234
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x1234)
         #expect(cpu.SP == 0xFF)
 
         // JSR 0x5678
-        cpu.runForTicks(6)
+        await cpu.runForTicks(6)
         #expect(cpu.PC == 0x5678)
         #expect(cpu.SP == 0xFD)
 
         // RTS
-        cpu.runForTicks(6)
+        await cpu.runForTicks(6)
         #expect(cpu.PC == 0x1237)
         #expect(cpu.SP == 0xFF)
     }

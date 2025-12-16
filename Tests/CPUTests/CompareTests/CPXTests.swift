@@ -14,12 +14,12 @@ struct CPXTests {
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.X = CompareTestInput.registerValue
             memory[0xA000] = Opcodes6502.CPX_Immediate.rawValue
             memory[0xA001] = CompareTestInput.memory
             
-            cpu.runForTicks(2)
+            await cpu.runForTicks(2)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
     }
@@ -29,13 +29,13 @@ struct CPXTests {
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.X = CompareTestInput.registerValue
             memory[0xA000] = Opcodes6502.CPX_ZeroPage.rawValue
             memory[0xA001] = 0x55
             memory[0x55] = CompareTestInput.memory
             
-            cpu.runForTicks(3)
+            await cpu.runForTicks(3)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
     }
@@ -45,14 +45,14 @@ struct CPXTests {
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.X = CompareTestInput.registerValue
             memory[0xA000] = Opcodes6502.CPX_Absolute.rawValue
             memory[0xA001] = 0x34
             memory[0xA002] = 0x12
             memory[0x1234] = CompareTestInput.memory
             
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
     }

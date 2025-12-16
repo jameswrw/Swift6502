@@ -45,16 +45,16 @@ struct MemoryControllerTests {
         #expect(cpu.memory[0x3001] == 0xFF)
         
         // JMP
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x1000)
         
         // LDA
-        cpu.runForTicks(4)
+        await cpu.runForTicks(4)
         #expect(cpu.memory[0x3000] == 0x22)
         #expect(cpu.memory[0x3001] == 0xFF)
         
         // LDA
-        cpu.runForTicks(4)
+        await cpu.runForTicks(4)
         #expect(cpu.memory[0x3000] == 0x22)
         #expect(cpu.memory[0x3001] == 0x33)
     }
@@ -93,14 +93,14 @@ struct MemoryControllerTests {
         #expect(cpu.memory[0x3002] == 0xFF)
         #expect(cpu.memory[0x3003] == 0xFF)
         
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.PC == 0x1000)
         
-        cpu.runForTicks(4)
+        await cpu.runForTicks(4)
         #expect(cpu.memory[0x3002] == 0xAB)
         #expect(cpu.memory[0x3003] == 0xFF)
         
-        cpu.runForTicks(4)
+        await cpu.runForTicks(4)
         #expect(cpu.memory[0x3002] == 0xAB)
         #expect(cpu.memory[0x3003] == 0xCD)
     }

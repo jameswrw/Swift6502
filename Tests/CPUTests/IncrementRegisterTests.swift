@@ -16,28 +16,28 @@ struct IncrementRegisterTests {
         memory[0xA000] = Opcodes6502.INX.rawValue
         cpu.X = 0x64
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.X == 0x65)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         memory[0xA000] = Opcodes6502.INX.rawValue
         cpu.X = 0xFF
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.X == 0x00)
-        #expect(cpu.readFlag(.Z) == true)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == true)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         memory[0xA000] = Opcodes6502.INX.rawValue
         cpu.X = 0x7F
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.X == 0x80)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == true)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == true)
     }
     
     @Test func testINY() async throws {
@@ -47,27 +47,27 @@ struct IncrementRegisterTests {
         memory[0xA000] = Opcodes6502.INY.rawValue
         cpu.Y = 0x64
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.Y == 0x65)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         memory[0xA000] = Opcodes6502.INY.rawValue
         cpu.Y = 0xFF
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.Y == 0x00)
-        #expect(cpu.readFlag(.Z) == true)
-        #expect(cpu.readFlag(.N) == false)
+        #expect(await cpu.readFlag(.Z) == true)
+        #expect(await cpu.readFlag(.N) == false)
         
-        cpu.reset()
+        await cpu.reset()
         memory[0xA000] = Opcodes6502.INY.rawValue
         cpu.Y = 0x7F
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.Y == 0x80)
-        #expect(cpu.readFlag(.Z) == false)
-        #expect(cpu.readFlag(.N) == true)
+        #expect(await cpu.readFlag(.Z) == false)
+        #expect(await cpu.readFlag(.N) == true)
     }
 }

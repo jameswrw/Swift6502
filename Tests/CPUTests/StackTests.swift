@@ -16,7 +16,7 @@ struct StackTests {
         cpu.X = 0x42
         memory[0xA000] = Opcodes6502.TSX.rawValue
         
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.X == 0xFF)
         #expect(cpu.SP == 0xFF)
         #expect(cpu.F == Flags.One.rawValue | Flags.I.rawValue)
@@ -29,7 +29,7 @@ struct StackTests {
         cpu.X = 0x42
         memory[0xA000] = Opcodes6502.TXS.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.X == 0x42)
         #expect(cpu.SP == 0x42)
         #expect(cpu.F == Flags.One.rawValue | Flags.I.rawValue)
@@ -43,7 +43,7 @@ struct StackTests {
         memory[0xA000] = Opcodes6502.PHA.rawValue
         memory[0x1FF] = 0x00
         
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.A == 0x73)
         #expect(cpu.SP == 0xFE)
         #expect(memory[0x1FF] == 0x73)
@@ -57,7 +57,7 @@ struct StackTests {
         memory[0xA000] = Opcodes6502.PLA.rawValue
         memory[0x1FF] = 0xFF
         
-        cpu.runForTicks(4)
+        await cpu.runForTicks(4)
         #expect(cpu.A == 0xFF)
         #expect(cpu.SP == 0xFF)
     }
@@ -69,7 +69,7 @@ struct StackTests {
         memory[0xA000] = Opcodes6502.PHP.rawValue
         memory[0x1FF] = 0x00
         
-        cpu.runForTicks(3)
+        await cpu.runForTicks(3)
         #expect(cpu.SP == 0xFE)
         #expect(memory[0x1FF] == Flags.One.rawValue | Flags.I.rawValue)
     }
@@ -82,7 +82,7 @@ struct StackTests {
         memory[0xA000] = Opcodes6502.PLP.rawValue
         memory[0x1FF] = 0xAA
         
-        cpu.runForTicks(4)
+        await cpu.runForTicks(4)
         #expect(cpu.SP == 0xFF)
         #expect(cpu.F == 0xAA)
     }

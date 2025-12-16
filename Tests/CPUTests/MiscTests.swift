@@ -15,7 +15,7 @@ struct MiscTests {
         
         memory[0xA000] = Opcodes6502.NOP.rawValue
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.A == 0)
         #expect(cpu.X == 0)
         #expect(cpu.Y == 0)

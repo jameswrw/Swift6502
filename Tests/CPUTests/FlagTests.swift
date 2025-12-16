@@ -14,12 +14,12 @@ struct FlagTests {
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.CLC.rawValue
-        cpu.setFlag(.C)
-        #expect(cpu.readFlag(.C) == true)
+        await cpu.setFlag(.C)
+        #expect(await cpu.readFlag(.C) == true)
         
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.PC == 0xA001)
-        #expect(cpu.readFlag(.C) == false)
+        #expect(await cpu.readFlag(.C) == false)
     }
     
     @Test func testCLD() async throws {
@@ -27,12 +27,12 @@ struct FlagTests {
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.CLD.rawValue
-        cpu.setFlag(.D)
-        #expect(cpu.readFlag(.D) == true)
+        await cpu.setFlag(.D)
+        #expect(await cpu.readFlag(.D) == true)
         
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.PC == 0xA001)
-        #expect(cpu.readFlag(.D) == false)
+        #expect(await cpu.readFlag(.D) == false)
     }
     
     @Test func testCLI() async throws {
@@ -40,13 +40,13 @@ struct FlagTests {
         defer { memory.deallocate() }
     
         memory[0xA000] = Opcodes6502.CLI.rawValue
-        #expect(cpu.readFlag(.I) == true)
-        cpu.setFlag(.I)
-        #expect(cpu.readFlag(.I) == true)
+        #expect(await cpu.readFlag(.I) == true)
+        await cpu.setFlag(.I)
+        #expect(await cpu.readFlag(.I) == true)
         
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.PC == 0xA001)
-        #expect(cpu.readFlag(.I) == false)
+        #expect(await cpu.readFlag(.I) == false)
     }
     
     @Test func testCLV() async throws {
@@ -54,12 +54,12 @@ struct FlagTests {
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.CLV.rawValue
-        cpu.setFlag(.V)
-        #expect(cpu.readFlag(.V) == true)
+        await cpu.setFlag(.V)
+        #expect(await cpu.readFlag(.V) == true)
         
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.PC == 0xA001)
-        #expect(cpu.readFlag(.V) == false)
+        #expect(await cpu.readFlag(.V) == false)
     }
     
     @Test func testSEC() async throws {
@@ -67,11 +67,11 @@ struct FlagTests {
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.SEC.rawValue
-        #expect(cpu.readFlag(.C) == false)
+        #expect(await cpu.readFlag(.C) == false)
         
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.PC == 0xA001)
-        #expect(cpu.readFlag(.C) == true)
+        #expect(await cpu.readFlag(.C) == true)
     }
     
     @Test func testSED() async throws {
@@ -79,11 +79,11 @@ struct FlagTests {
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.SED.rawValue
-        #expect(cpu.readFlag(.D) == false)
+        #expect(await cpu.readFlag(.D) == false)
 
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.PC == 0xA001)
-        #expect(cpu.readFlag(.D) == true)
+        #expect(await cpu.readFlag(.D) == true)
     }
     
     @Test func testSEI() async throws {
@@ -91,11 +91,11 @@ struct FlagTests {
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.SEI.rawValue
-        #expect(cpu.readFlag(.I) == true)
+        #expect(await cpu.readFlag(.I) == true)
         
-        cpu.runForTicks(2)
+        await cpu.runForTicks(2)
         #expect(cpu.PC == 0xA001)
-        #expect(cpu.readFlag(.I) == true)
+        #expect(await cpu.readFlag(.I) == true)
 
     }
 }

@@ -14,12 +14,12 @@ struct CMPTests {
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.A = CompareTestInput.registerValue
             memory[0xA000] = Opcodes6502.CMP_Immediate.rawValue
             memory[0xA001] = CompareTestInput.memory
             
-            cpu.runForTicks(2)
+            await cpu.runForTicks(2)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
     }
@@ -29,13 +29,13 @@ struct CMPTests {
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.A = CompareTestInput.registerValue
             memory[0xA000] = Opcodes6502.CMP_ZeroPage.rawValue
             memory[0xA001] = 0x55
             memory[0x55] = CompareTestInput.memory
             
-            cpu.runForTicks(3)
+            await cpu.runForTicks(3)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
     }
@@ -45,14 +45,14 @@ struct CMPTests {
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.A = CompareTestInput.registerValue
             cpu.X = 0x10
             memory[0xA000] = Opcodes6502.CMP_ZeroPageX.rawValue
             memory[0xA001] = 0x55
             memory[0x65] = CompareTestInput.memory
             
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
     }
@@ -62,14 +62,14 @@ struct CMPTests {
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.A = CompareTestInput.registerValue
             memory[0xA000] = Opcodes6502.CMP_Absolute.rawValue
             memory[0xA001] = 0x34
             memory[0xA002] = 0x12
             memory[0x1234] = CompareTestInput.memory
             
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
     }
@@ -80,7 +80,7 @@ struct CMPTests {
         
         // No page boundary crossed.
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.A = CompareTestInput.registerValue
             cpu.X = 0x10
             
@@ -89,13 +89,13 @@ struct CMPTests {
             memory[0xA002] = 0x56
             memory[0x5688] = CompareTestInput.memory
             
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
         
         // Page boundary crossed.
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.A = CompareTestInput.registerValue
             cpu.X = 0x10
             memory[0xA000] = Opcodes6502.CMP_AbsoluteX.rawValue
@@ -104,7 +104,7 @@ struct CMPTests {
             memory[0xA100] = CompareTestInput.memory
             
             let oldTickcount = cpu.tickcount
-            cpu.runForTicks(5)
+            await cpu.runForTicks(5)
             #expect(cpu.tickcount - oldTickcount == 5)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
@@ -116,7 +116,7 @@ struct CMPTests {
         
         // No page boundary crossed.
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.A = CompareTestInput.registerValue
             cpu.Y = 0x10
             memory[0xA000] = Opcodes6502.CMP_AbsoluteY.rawValue
@@ -125,14 +125,14 @@ struct CMPTests {
             memory[0x1983] = CompareTestInput.memory
             
             let oldTickcount = cpu.tickcount
-            cpu.runForTicks(4)
+            await cpu.runForTicks(4)
             #expect(cpu.tickcount - oldTickcount == 4)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
         
         // Page boundary crossed.
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.A = CompareTestInput.registerValue
             cpu.Y = 0x10
             memory[0xA000] = Opcodes6502.CMP_AbsoluteY.rawValue
@@ -141,7 +141,7 @@ struct CMPTests {
             memory[0x4100] = CompareTestInput.memory
             
             let oldTickcount = cpu.tickcount
-            cpu.runForTicks(5)
+            await cpu.runForTicks(5)
             #expect(cpu.tickcount - oldTickcount == 5)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
@@ -152,7 +152,7 @@ struct CMPTests {
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.A = CompareTestInput.registerValue
             cpu.X = 0x10
             memory[0xA000] = Opcodes6502.CMP_IndirectX.rawValue
@@ -161,7 +161,7 @@ struct CMPTests {
             memory[0x53] = 0x19
             memory[0x1973] = CompareTestInput.memory
             
-            cpu.runForTicks(6)
+            await cpu.runForTicks(6)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
     }
@@ -172,7 +172,7 @@ struct CMPTests {
         
         // No page boundary crossed.
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.A = CompareTestInput.registerValue
             cpu.Y = 0x10
             memory[0xA000] = Opcodes6502.CMP_IndirectY.rawValue
@@ -182,14 +182,14 @@ struct CMPTests {
             memory[0x2014] = CompareTestInput.memory
             
             let oldTickcount = cpu.tickcount
-            cpu.runForTicks(5)
+            await cpu.runForTicks(5)
             #expect(cpu.tickcount - oldTickcount == 5)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
         
         // Page boundary crossed.
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
-            cpu.reset()
+            await cpu.reset()
             cpu.A = CompareTestInput.registerValue
             cpu.Y = 0x40
             memory[0xA000] = Opcodes6502.CMP_IndirectY.rawValue
@@ -199,7 +199,7 @@ struct CMPTests {
             memory[0x3130] = CompareTestInput.memory
             
             let oldTickcount = cpu.tickcount
-            cpu.runForTicks(6)
+            await cpu.runForTicks(6)
             #expect(cpu.tickcount - oldTickcount == 6)
             testCMP(cpu: cpu, CompareTestOutput: compareTestOutputs[i])
         }
