@@ -10,7 +10,7 @@ import Testing
 
 struct CMPTests {
     @Test func testCMP_Immediate() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
@@ -25,7 +25,7 @@ struct CMPTests {
     }
     
     @Test func testCMP_ZeroPage() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
@@ -41,7 +41,7 @@ struct CMPTests {
     }
     
     @Test func testCMP_ZeroPageX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
@@ -58,7 +58,7 @@ struct CMPTests {
     }
     
     @Test func testCMP_Absolute() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
@@ -75,7 +75,7 @@ struct CMPTests {
     }
     
     @Test func testCMP_AbsoluteX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // No page boundary crossed.
@@ -105,13 +105,15 @@ struct CMPTests {
             
             let oldTickcount = await cpu.tickcount
             await cpu.runForTicks(5)
-            #expect( cpu.tickcount - oldTickcount == 5)
+            let tickDelta = await cpu.tickcount - oldTickcount
+            
+            #expect(tickDelta == 5)
             await testCMP(cpu: cpu, expected: compareTestOutputs[i])
         }
     }
     
     @Test func testCMP_AbsoluteY() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // No page boundary crossed.
@@ -126,7 +128,9 @@ struct CMPTests {
             
             let oldTickcount = await cpu.tickcount
             await cpu.runForTicks(4)
-            #expect( cpu.tickcount - oldTickcount == 4)
+            let tickDelta = await cpu.tickcount - oldTickcount
+            
+            #expect(tickDelta == 4)
             await testCMP(cpu: cpu, expected: compareTestOutputs[i])
         }
         
@@ -142,13 +146,15 @@ struct CMPTests {
             
             let oldTickcount = await cpu.tickcount
             await cpu.runForTicks(5)
-            #expect( cpu.tickcount - oldTickcount == 5)
+            let tickDelta = await cpu.tickcount - oldTickcount
+            
+            #expect(tickDelta == 5)
             await testCMP(cpu: cpu, expected: compareTestOutputs[i])
         }
     }
     
     @Test func testCMP_IndirectX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
@@ -167,7 +173,7 @@ struct CMPTests {
     }
     
     @Test func testCMP_IndirectY() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // No page boundary crossed.
@@ -183,7 +189,9 @@ struct CMPTests {
             
             let oldTickcount = await cpu.tickcount
             await cpu.runForTicks(5)
-            #expect( cpu.tickcount - oldTickcount == 5)
+            let tickDelta = await cpu.tickcount - oldTickcount
+            
+            #expect(tickDelta == 5)
             await testCMP(cpu: cpu, expected: compareTestOutputs[i])
         }
         
@@ -200,8 +208,11 @@ struct CMPTests {
             
             let oldTickcount = await cpu.tickcount
             await cpu.runForTicks(6)
-            #expect( cpu.tickcount - oldTickcount == 6)
+            let tickDelta = await cpu.tickcount - oldTickcount
+            
+            #expect(tickDelta == 6)
             await testCMP(cpu: cpu, expected: compareTestOutputs[i])
         }
     }
 }
+

@@ -10,7 +10,7 @@ import Testing
 
 struct DecrementMemoryTests {
     @Test func testDEC_ZeroPage() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Simple decrement.
@@ -19,10 +19,15 @@ struct DecrementMemoryTests {
         memory[0x42] = 0x0A
         
         await cpu.runForTicks(5)
-        #expect(cpu.PC == 0xA002)
+        
+        var pc = await cpu.PC
+        var zFlag = await cpu.readFlag(.Z)
+        var nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA002)
         #expect(memory[0x42] == 0x09)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
 
         // Decrement that sets the N flag.
         await cpu.reset()
@@ -31,10 +36,15 @@ struct DecrementMemoryTests {
         memory[0x42] = 0x88
 
         await cpu.runForTicks(5)
-        #expect(cpu.PC == 0xA002)
+        
+        pc = await cpu.PC
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA002)
         #expect(memory[0x42] == 0x87)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
+        #expect(zFlag == false)
+        #expect(nFlag == true)
         
         // Decrement that sets the Z flag.
         await cpu.reset()
@@ -43,14 +53,19 @@ struct DecrementMemoryTests {
         memory[0x42] = 0x01
 
         await cpu.runForTicks(5)
-        #expect(cpu.PC == 0xA002)
+        
+        pc = await cpu.PC
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA002)
         #expect(memory[0x42] == 0x00)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
+        #expect(zFlag == true)
+        #expect(nFlag == false)
     }
     
     @Test func testDEC_ZeroPageX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Simple decrement.
@@ -60,10 +75,15 @@ struct DecrementMemoryTests {
         memory[0x73] = 0x0A
         
         await cpu.runForTicks(6)
-        #expect(cpu.PC == 0xA002)
+        
+        var pc = await cpu.PC
+        var zFlag = await cpu.readFlag(.Z)
+        var nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA002)
         #expect(memory[0x73] == 0x09)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
 
         // Decrement that sets the N flag.
         await cpu.reset()
@@ -73,10 +93,14 @@ struct DecrementMemoryTests {
         memory[0x73] = 0x88
 
         await cpu.runForTicks(6)
-        #expect(cpu.PC == 0xA002)
+        pc = await cpu.PC
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA002)
         #expect(memory[0x73] == 0x87)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
+        #expect(zFlag == false)
+        #expect(nFlag == true)
         
         // Decrement that sets the Z flag.
         await cpu.reset()
@@ -86,10 +110,15 @@ struct DecrementMemoryTests {
         memory[0x73] = 0x01
 
         await cpu.runForTicks(6)
-        #expect(cpu.PC == 0xA002)
+        
+        pc = await cpu.PC
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA002)
         #expect(memory[0x73] == 0x00)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
+        #expect(zFlag == true)
+        #expect(nFlag == false)
         
         // Decrement that checks that (opcode argument + X) wraps around.
         await cpu.reset()
@@ -99,14 +128,19 @@ struct DecrementMemoryTests {
         memory[0x73] = 0x00
         
         await cpu.runForTicks(6)
-        #expect(cpu.PC == 0xA002)
+        
+        pc = await cpu.PC
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA002)
         #expect(memory[0x73] == 0xFF)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
+        #expect(zFlag == false)
+        #expect(nFlag == true)
     }
     
     @Test func testDEC_Absolute() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Simple decrement.
@@ -116,10 +150,15 @@ struct DecrementMemoryTests {
         memory[0x1973] = 0x0A
         
         await cpu.runForTicks(6)
-        #expect(cpu.PC == 0xA003)
+        
+        var pc = await cpu.PC
+        var zFlag = await cpu.readFlag(.Z)
+        var nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA003)
         #expect(memory[0x1973] == 0x09)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
 
         // Decrement that sets the N flag.
         await cpu.reset()
@@ -129,10 +168,15 @@ struct DecrementMemoryTests {
         memory[0x1973] = 0x88
 
         await cpu.runForTicks(6)
-        #expect(cpu.PC == 0xA003)
+        
+        pc = await cpu.PC
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA003)
         #expect(memory[0x1973] == 0x87)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
+        #expect(zFlag == false)
+        #expect(nFlag == true)
         
         // Decrement that sets the Z flag.
         await cpu.reset()
@@ -142,14 +186,19 @@ struct DecrementMemoryTests {
         memory[0x1973] = 0x01
 
         await cpu.runForTicks(6)
-        #expect(cpu.PC == 0xA003)
+        
+        pc = await cpu.PC
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA003)
         #expect(memory[0x1973] == 0x00)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
+        #expect(zFlag == true)
+        #expect(nFlag == false)
     }
     
     @Test func testDEC_AbsoluteX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Simple decrement.
@@ -160,10 +209,15 @@ struct DecrementMemoryTests {
         memory[0xF00D] = 0x66
         
         await cpu.runForTicks(7)
-        #expect(cpu.PC == 0xA003)
+        
+        var pc = await cpu.PC
+        var zFlag = await cpu.readFlag(.Z)
+        var nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA003)
         #expect(memory[0xF00D] == 0x65)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
 
         // Decrement that sets the N flag.
         await cpu.reset()
@@ -174,10 +228,15 @@ struct DecrementMemoryTests {
         memory[0xF00D] = 0x99
 
         await cpu.runForTicks(7)
-        #expect(cpu.PC == 0xA003)
+        
+        pc = await cpu.PC
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA003)
         #expect(memory[0xF00D] == 0x98)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
+        #expect(zFlag == false)
+        #expect(nFlag == true)
         
         // Decrement that sets the Z flag.
         await cpu.reset()
@@ -188,10 +247,15 @@ struct DecrementMemoryTests {
         memory[0xF00D] = 0x01
 
         await cpu.runForTicks(7)
-        #expect(cpu.PC == 0xA003)
+        
+        pc = await cpu.PC
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA003)
         #expect(memory[0xF00D] == 0x00)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
+        #expect(zFlag == true)
+        #expect(nFlag == false)
         
         // Decrement that checks that (opcode argument + X) wraps around.
         await cpu.reset()
@@ -202,9 +266,14 @@ struct DecrementMemoryTests {
         memory[0x11] = 0x36
         
         await cpu.runForTicks(7)
-        #expect(cpu.PC == 0xA003)
+        
+        pc = await cpu.PC
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(pc == 0xA003)
         #expect(memory[0x11] == 0x35)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
     }
 }

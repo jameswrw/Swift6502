@@ -10,64 +10,89 @@ import Testing
 
 struct DecrementRegisterTests {
     @Test func testDEX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.DEX.rawValue
         await cpu.setX(0x64)
 
         await cpu.runForTicks(2)
-        #expect(cpu.X == 0x63)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
+        var x = await cpu.X
+        var zFlag = await cpu.readFlag(.Z)
+        var nFlag = await cpu.readFlag(.N)
+
+        #expect(x == 0x63)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
         
         await cpu.reset()
         memory[0xA000] = Opcodes6502.DEX.rawValue
         await cpu.setX(0x00)
 
         await cpu.runForTicks(2)
-        #expect(cpu.X == 0xFF)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
+        x = await cpu.X
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+
+        #expect(x == 0xFF)
+        #expect(zFlag == false)
+        #expect(nFlag == true)
         
         await cpu.reset()
         memory[0xA000] = Opcodes6502.DEX.rawValue
         await cpu.setX(0x01)
 
         await cpu.runForTicks(2)
-        #expect(cpu.X == 0x00)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
+        x = await cpu.X
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+
+        #expect(x == 0x00)
+        #expect(zFlag == true)
+        #expect(nFlag == false)
     }
     
     @Test func testDEY() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         await cpu.setY(0x64)
         memory[0xA000] = Opcodes6502.DEY.rawValue
 
         await cpu.runForTicks(2)
-        #expect(cpu.Y == 0x63)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
+        var y = await cpu.Y
+        var zFlag = await cpu.readFlag(.Z)
+        var nFlag = await cpu.readFlag(.N)
+
+        #expect(y == 0x63)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
         
         await cpu.reset()
         memory[0xA000] = Opcodes6502.DEY.rawValue
         await cpu.setY(0x00)
 
         await cpu.runForTicks(2)
-        #expect(cpu.Y == 0xFF)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
+        y = await cpu.Y
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+
+        #expect(y == 0xFF)
+        #expect(zFlag == false)
+        #expect(nFlag == true)
         
         await cpu.reset()
         memory[0xA000] = Opcodes6502.DEY.rawValue
         await cpu.setY(0x01)
 
         await cpu.runForTicks(2)
-        #expect(cpu.Y == 0x00)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
+        y = await cpu.Y
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+
+        #expect(y == 0x00)
+        #expect(zFlag == true)
+        #expect(nFlag == false)
     }
 }
+

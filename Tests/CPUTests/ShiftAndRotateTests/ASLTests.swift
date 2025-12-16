@@ -10,7 +10,7 @@ import Testing
 
 struct ASLTests {
     @Test func testASL_Accumulator() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Simple left shift.
@@ -18,10 +18,15 @@ struct ASLTests {
         await cpu.setA(0x01)
         
         await cpu.runForTicks(2)
-        #expect(cpu.A == 0x02)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
-        #expect( cpu.readFlag(.C) == false)
+        let a1 = await cpu.A
+        let z1 = await cpu.readFlag(.Z)
+        let n1 = await cpu.readFlag(.N)
+        let c1 = await cpu.readFlag(.C)
+
+        #expect(a1 == 0x02)
+        #expect(z1 == false)
+        #expect(n1 == false)
+        #expect(c1 == false)
         
         // Left shift that sets zero and carry flags.
         await cpu.reset()
@@ -29,10 +34,15 @@ struct ASLTests {
         await cpu.setA(0x80)
         
         await cpu.runForTicks(2)
-        #expect(cpu.A == 0x00)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
-        #expect( cpu.readFlag(.C) == true)
+        let a2 = await cpu.A
+        let z2 = await cpu.readFlag(.Z)
+        let n2 = await cpu.readFlag(.N)
+        let c2 = await cpu.readFlag(.C)
+
+        #expect(a2 == 0x00)
+        #expect(z2 == true)
+        #expect(n2 == false)
+        #expect(c2 == true)
         
         // Left shift that sets negative flag.
         await cpu.reset()
@@ -40,15 +50,21 @@ struct ASLTests {
         await cpu.setA(0x42)
         
         await cpu.runForTicks(2)
-        #expect(cpu.A == 0x84)
-        #expect(cpu.PC == 0xA001)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
-        #expect( cpu.readFlag(.C) == false)
+        let a3 = await cpu.A
+        let pc3 = await cpu.PC
+        let z3 = await cpu.readFlag(.Z)
+        let n3 = await cpu.readFlag(.N)
+        let c3 = await cpu.readFlag(.C)
+
+        #expect(a3 == 0x84)
+        #expect(pc3 == 0xA001)
+        #expect(z3 == false)
+        #expect(n3 == true)
+        #expect(c3 == false)
     }
     
     @Test func testASL_ZeroPage() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Simple left shift.
@@ -57,11 +73,17 @@ struct ASLTests {
         memory[0x11] = 0x21
         
         await cpu.runForTicks(5)
-        #expect(memory[0x11] == 0x42)
-        #expect(cpu.PC == 0xA002)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
-        #expect( cpu.readFlag(.C) == false)
+        let mem1 = memory[0x11]
+        let pc1 = await cpu.PC
+        let z1 = await cpu.readFlag(.Z)
+        let n1 = await cpu.readFlag(.N)
+        let c1 = await cpu.readFlag(.C)
+
+        #expect(mem1 == 0x42)
+        #expect(pc1 == 0xA002)
+        #expect(z1 == false)
+        #expect(n1 == false)
+        #expect(c1 == false)
         
         // Left shift zero would fail if carry was set.
         await cpu.reset()
@@ -71,11 +93,17 @@ struct ASLTests {
         memory[0x11] = 0x00
         
         await cpu.runForTicks(5)
-        #expect(memory[0x11] == 0x00)
-        #expect(cpu.PC == 0xA002)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
-        #expect( cpu.readFlag(.C) == false)
+        let mem2 = memory[0x11]
+        let pc2 = await cpu.PC
+        let z2 = await cpu.readFlag(.Z)
+        let n2 = await cpu.readFlag(.N)
+        let c2 = await cpu.readFlag(.C)
+
+        #expect(mem2 == 0x00)
+        #expect(pc2 == 0xA002)
+        #expect(z2 == true)
+        #expect(n2 == false)
+        #expect(c2 == false)
         
         // Left shift that sets zero and carry flags.
         await cpu.reset()
@@ -84,11 +112,17 @@ struct ASLTests {
         memory[0x11] = 0x80
         
         await cpu.runForTicks(5)
-        #expect(memory[0x11] == 0x00)
-        #expect(cpu.PC == 0xA002)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
-        #expect( cpu.readFlag(.C) == true)
+        let mem3 = memory[0x11]
+        let pc3 = await cpu.PC
+        let z3 = await cpu.readFlag(.Z)
+        let n3 = await cpu.readFlag(.N)
+        let c3 = await cpu.readFlag(.C)
+
+        #expect(mem3 == 0x00)
+        #expect(pc3 == 0xA002)
+        #expect(z3 == true)
+        #expect(n3 == false)
+        #expect(c3 == true)
         
         // Left shift that sets negative flag.
         await cpu.reset()
@@ -97,15 +131,21 @@ struct ASLTests {
         memory[0x11] = 0x40
         
         await cpu.runForTicks(5)
-        #expect(memory[0x11] == 0x80)
-        #expect(cpu.PC == 0xA002)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
-        #expect( cpu.readFlag(.C) == false)
+        let mem4 = memory[0x11]
+        let pc4 = await cpu.PC
+        let z4 = await cpu.readFlag(.Z)
+        let n4 = await cpu.readFlag(.N)
+        let c4 = await cpu.readFlag(.C)
+
+        #expect(mem4 == 0x80)
+        #expect(pc4 == 0xA002)
+        #expect(z4 == false)
+        #expect(n4 == true)
+        #expect(c4 == false)
     }
     
     @Test func testASL_ZeroPageX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Simple left shift
@@ -115,11 +155,17 @@ struct ASLTests {
         memory[0x5A] = 0x04
         
         await cpu.runForTicks(6)
-        #expect(memory[0x5A] == 0x08)
-        #expect(cpu.PC == 0xA002)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
-        #expect( cpu.readFlag(.C) == false)
+        let mem1 = memory[0x5A]
+        let pc1 = await cpu.PC
+        let z1 = await cpu.readFlag(.Z)
+        let n1 = await cpu.readFlag(.N)
+        let c1 = await cpu.readFlag(.C)
+
+        #expect(mem1 == 0x08)
+        #expect(pc1 == 0xA002)
+        #expect(z1 == false)
+        #expect(n1 == false)
+        #expect(c1 == false)
         
         // Left shift that sets zero and carry flags.
         await cpu.reset()
@@ -129,11 +175,17 @@ struct ASLTests {
         memory[0x5A] = 0x80
         
         await cpu.runForTicks(6)
-        #expect(memory[0x5A] == 0x00)
-        #expect(cpu.PC == 0xA002)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
-        #expect( cpu.readFlag(.C) == true)
+        let mem2 = memory[0x5A]
+        let pc2 = await cpu.PC
+        let z2 = await cpu.readFlag(.Z)
+        let n2 = await cpu.readFlag(.N)
+        let c2 = await cpu.readFlag(.C)
+
+        #expect(mem2 == 0x00)
+        #expect(pc2 == 0xA002)
+        #expect(z2 == true)
+        #expect(n2 == false)
+        #expect(c2 == true)
         
         // Left shift that sets negative flag.
         await cpu.reset()
@@ -143,15 +195,21 @@ struct ASLTests {
         memory[0x5A] = 0x40
         
         await cpu.runForTicks(6)
-        #expect(memory[0x5A] == 0x80)
-        #expect(cpu.PC == 0xA002)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
-        #expect( cpu.readFlag(.C) == false)
+        let mem3 = memory[0x5A]
+        let pc3 = await cpu.PC
+        let z3 = await cpu.readFlag(.Z)
+        let n3 = await cpu.readFlag(.N)
+        let c3 = await cpu.readFlag(.C)
+
+        #expect(mem3 == 0x80)
+        #expect(pc3 == 0xA002)
+        #expect(z3 == false)
+        #expect(n3 == true)
+        #expect(c3 == false)
     }
     
     @Test func testASL_Absolute() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Simple left shift.
@@ -161,11 +219,17 @@ struct ASLTests {
         memory[0x2211] = 0x15
         
         await cpu.runForTicks(6)
-        #expect(memory[0x2211] == 0x2A)
-        #expect(cpu.PC == 0xA003)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
-        #expect( cpu.readFlag(.C) == false)
+        let mem1 = memory[0x2211]
+        let pc1 = await cpu.PC
+        let z1 = await cpu.readFlag(.Z)
+        let n1 = await cpu.readFlag(.N)
+        let c1 = await cpu.readFlag(.C)
+
+        #expect(mem1 == 0x2A)
+        #expect(pc1 == 0xA003)
+        #expect(z1 == false)
+        #expect(n1 == false)
+        #expect(c1 == false)
         
         // Left shift that sets zero and carry flags.
         await cpu.reset()
@@ -175,11 +239,17 @@ struct ASLTests {
         memory[0x2211] = 0x80
         
         await cpu.runForTicks(6)
-        #expect(memory[0x2211] == 0x00)
-        #expect(cpu.PC == 0xA003)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
-        #expect( cpu.readFlag(.C) == true)
+        let mem2 = memory[0x2211]
+        let pc2 = await cpu.PC
+        let z2 = await cpu.readFlag(.Z)
+        let n2 = await cpu.readFlag(.N)
+        let c2 = await cpu.readFlag(.C)
+
+        #expect(mem2 == 0x00)
+        #expect(pc2 == 0xA003)
+        #expect(z2 == true)
+        #expect(n2 == false)
+        #expect(c2 == true)
         
         // Left shift that sets negative flag.
         await cpu.reset()
@@ -189,15 +259,21 @@ struct ASLTests {
         memory[0x2211] = 0x40
         
         await cpu.runForTicks(6)
-        #expect(memory[0x2211] == 0x80)
-        #expect(cpu.PC == 0xA003)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
-        #expect( cpu.readFlag(.C) == false)
+        let mem3 = memory[0x2211]
+        let pc3 = await cpu.PC
+        let z3 = await cpu.readFlag(.Z)
+        let n3 = await cpu.readFlag(.N)
+        let c3 = await cpu.readFlag(.C)
+
+        #expect(mem3 == 0x80)
+        #expect(pc3 == 0xA003)
+        #expect(z3 == false)
+        #expect(n3 == true)
+        #expect(c3 == false)
     }
     
     @Test func testASL_AbsoluteX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Simple left shift
@@ -208,11 +284,17 @@ struct ASLTests {
         memory[0x50FA] = 0x04
         
         await cpu.runForTicks(7)
-        #expect(memory[0x50FA] == 0x08)
-        #expect(cpu.PC == 0xA003)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
-        #expect( cpu.readFlag(.C) == false)
+        let mem1 = memory[0x50FA]
+        let pc1 = await cpu.PC
+        let z1 = await cpu.readFlag(.Z)
+        let n1 = await cpu.readFlag(.N)
+        let c1 = await cpu.readFlag(.C)
+
+        #expect(mem1 == 0x08)
+        #expect(pc1 == 0xA003)
+        #expect(z1 == false)
+        #expect(n1 == false)
+        #expect(c1 == false)
         
         // Left shift that sets zero and carry flags.
         await cpu.reset()
@@ -223,11 +305,17 @@ struct ASLTests {
         memory[0x50FA] = 0x80
         
         await cpu.runForTicks(7)
-        #expect(memory[0x50FA] == 0x00)
-        #expect(cpu.PC == 0xA003)
-        #expect( cpu.readFlag(.Z) == true)
-        #expect( cpu.readFlag(.N) == false)
-        #expect( cpu.readFlag(.C) == true)
+        let mem2 = memory[0x50FA]
+        let pc2 = await cpu.PC
+        let z2 = await cpu.readFlag(.Z)
+        let n2 = await cpu.readFlag(.N)
+        let c2 = await cpu.readFlag(.C)
+
+        #expect(mem2 == 0x00)
+        #expect(pc2 == 0xA003)
+        #expect(z2 == true)
+        #expect(n2 == false)
+        #expect(c2 == true)
         
         // Left shift that sets negative flag.
         await cpu.reset()
@@ -238,10 +326,16 @@ struct ASLTests {
         memory[0x50FA] = 0x40
         
         await cpu.runForTicks(7)
-        #expect(memory[0x50FA] == 0x80)
-        #expect(cpu.PC == 0xA003)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
-        #expect( cpu.readFlag(.C) == false)
+        let mem3 = memory[0x50FA]
+        let pc3 = await cpu.PC
+        let z3 = await cpu.readFlag(.Z)
+        let n3 = await cpu.readFlag(.N)
+        let c3 = await cpu.readFlag(.C)
+
+        #expect(mem3 == 0x80)
+        #expect(pc3 == 0xA003)
+        #expect(z3 == false)
+        #expect(n3 == true)
+        #expect(c3 == false)
     }
 }

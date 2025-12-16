@@ -10,7 +10,7 @@ import Testing
 
 struct CPXTests {
     @Test func testCPX_Immediate() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
@@ -25,7 +25,7 @@ struct CPXTests {
     }
     
     @Test func testCPX_ZeroPage() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {
@@ -41,7 +41,7 @@ struct CPXTests {
     }
     
     @Test func testCPX_Absolute() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for (i, CompareTestInput) in compareTestInputs.enumerated() {

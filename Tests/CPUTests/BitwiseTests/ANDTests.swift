@@ -18,7 +18,7 @@ struct ANDTests {
     ]
     
     @Test func testAND_Immediate() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for payload in payloads {
@@ -28,14 +28,18 @@ struct ANDTests {
             memory[0xA001] = payload.operand
             
             await cpu.runForTicks(2)
-            #expect(cpu.A == payload.result)
-            #expect( cpu.readFlag(.Z) == payload.Z)
-            #expect( cpu.readFlag(.N) == payload.N)
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+
+            #expect(a == payload.result)
+            #expect(zFlag == payload.Z)
+            #expect(nFlag == payload.N)
         }
     }
     
     @Test func testAND_ZeroPage() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for payload in payloads {
@@ -46,14 +50,18 @@ struct ANDTests {
             memory[0x06] = payload.operand
             
             await cpu.runForTicks(2)
-            #expect(cpu.A == payload.result)
-            #expect( cpu.readFlag(.Z) == payload.Z)
-            #expect( cpu.readFlag(.N) == payload.N)
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+
+            #expect(a == payload.result)
+            #expect(zFlag == payload.Z)
+            #expect(nFlag == payload.N)
         }
     }
     
     @Test func testAND_ZeroPageX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for payload in payloads {
@@ -65,14 +73,18 @@ struct ANDTests {
             memory[0x42] = payload.operand
             
             await cpu.runForTicks(4)
-            #expect(cpu.A == payload.result)
-            #expect( cpu.readFlag(.Z) == payload.Z)
-            #expect( cpu.readFlag(.N) == payload.N)
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+
+            #expect(a == payload.result)
+            #expect(zFlag == payload.Z)
+            #expect(nFlag == payload.N)
         }
     }
     
     @Test func testAND_Absolute() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for payload in payloads {
@@ -84,14 +96,18 @@ struct ANDTests {
             memory[0x1234] = payload.operand
             
             await cpu.runForTicks(4)
-            #expect(cpu.A == payload.result)
-            #expect( cpu.readFlag(.Z) == payload.Z)
-            #expect( cpu.readFlag(.N) == payload.N)
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+
+            #expect(a == payload.result)
+            #expect(zFlag == payload.Z)
+            #expect(nFlag == payload.N)
         }
     }
     
     @Test func testAND_AbsoluteX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for payload in payloads {
@@ -104,9 +120,14 @@ struct ANDTests {
             memory[0x5688] = payload.operand
             
             await cpu.runForTicks(4)
-            #expect(cpu.A == payload.result)
-            #expect( cpu.readFlag(.Z) == payload.Z)
-            #expect( cpu.readFlag(.N) == payload.N)
+            
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            
+            #expect(a == payload.result)
+            #expect(zFlag == payload.Z)
+            #expect(nFlag == payload.N)
         }
         
         // Test crossing a page boundary takes five ticks instead of four.
@@ -120,14 +141,19 @@ struct ANDTests {
         
         let oldTickcount = await cpu.tickcount
         await cpu.runForTicks(5)
-        #expect( cpu.tickcount - oldTickcount == 5)
-        #expect(cpu.A == 0x13)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
+        let newTickcount = await cpu.tickcount
+        let a = await cpu.A
+        let zFlag = await cpu.readFlag(.Z)
+        let nFlag = await cpu.readFlag(.N)
+
+        #expect(newTickcount - oldTickcount == 5)
+        #expect(a == 0x13)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
     }
     
     @Test func testAND_AbsoluteY() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for payload in payloads {
@@ -140,9 +166,14 @@ struct ANDTests {
             memory[0x5688] = payload.operand
             
             await cpu.runForTicks(4)
-            #expect(cpu.A == payload.result)
-            #expect( cpu.readFlag(.Z) == payload.Z)
-            #expect( cpu.readFlag(.N) == payload.N)
+            
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            
+            #expect(a == payload.result)
+            #expect(zFlag == payload.Z)
+            #expect(nFlag == payload.N)
         }
         
         // Test crossing a page boundary takes five ticks instead of four.
@@ -156,14 +187,19 @@ struct ANDTests {
         
         let oldTickcount = await cpu.tickcount
         await cpu.runForTicks(5)
-        #expect( cpu.tickcount - oldTickcount == 5)
-        #expect(cpu.A == 0x13)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
+        let tickDelta = await cpu.tickcount - oldTickcount
+        let a = await cpu.A
+        let zFlag = await cpu.readFlag(.Z)
+        let nFlag = await cpu.readFlag(.N)
+
+        #expect(tickDelta == 5)
+        #expect(a == 0x13)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
     }
     
     @Test func testAND_IndirectX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for payload in payloads {
@@ -177,14 +213,18 @@ struct ANDTests {
             memory[0x1973] = payload.operand
             
             await cpu.runForTicks(6)
-            #expect(cpu.A == payload.result)
-            #expect( cpu.readFlag(.Z) == payload.Z)
-            #expect( cpu.readFlag(.N) == payload.N)
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+
+            #expect(a == payload.result)
+            #expect(zFlag == payload.Z)
+            #expect(nFlag == payload.N)
         }
     }
     
     @Test func testAND_IndirectY() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for payload in payloads {
@@ -198,9 +238,13 @@ struct ANDTests {
             memory[0x1993] = payload.operand
             
             await cpu.runForTicks(5)
-            #expect(cpu.A == payload.result)
-            #expect( cpu.readFlag(.Z) == payload.Z)
-            #expect( cpu.readFlag(.N) == payload.N)
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+
+            #expect(a == payload.result)
+            #expect(zFlag == payload.Z)
+            #expect(nFlag == payload.N)
         }
         
         // Test crossing a page boundary takes five ticks instead of four.
@@ -214,8 +258,13 @@ struct ANDTests {
         memory[0x1A10] = 0x87
         
         await cpu.runForTicks(5)
-        #expect(cpu.A == 0x7)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
+        let a = await cpu.A
+        let zFlag = await cpu.readFlag(.Z)
+        let nFlag = await cpu.readFlag(.N)
+
+        #expect(a == 0x7)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
     }
 }
+

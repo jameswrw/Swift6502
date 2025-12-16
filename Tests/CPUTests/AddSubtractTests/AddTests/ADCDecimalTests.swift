@@ -24,7 +24,7 @@ struct ADCDecimalTests {
     ]
     
     @Test func testADC_Immediate() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
 
         var useCarry = true
@@ -40,18 +40,24 @@ struct ADCDecimalTests {
                 memory[0xA001] = payload.operand
                 
                 await cpu.runForTicks(2)
-                #expect(cpu.A == payload.result)
-                #expect( cpu.readFlag(.Z) == payload.Z)
-                #expect( cpu.readFlag(.N) == payload.N)
-                #expect( cpu.readFlag(.C) == payload.C)
-                #expect( cpu.readFlag(.V) == payload.V)
+                let a = await cpu.A
+                let zFlag = await cpu.readFlag(.Z)
+                let nFlag = await cpu.readFlag(.N)
+                let cFlag = await cpu.readFlag(.C)
+                let vFlag = await cpu.readFlag(.V)
+
+                #expect(a == payload.result)
+                #expect(zFlag == payload.Z)
+                #expect(nFlag == payload.N)
+                #expect(cFlag == payload.C)
+                #expect(vFlag == payload.V)
             }
             useCarry.toggle()
         }
     }
     
     @Test func testADC_ZeroPage() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
 
         var useCarry = true
@@ -67,18 +73,24 @@ struct ADCDecimalTests {
                 memory[0x42] = payload.operand
                 
                 await cpu.runForTicks(3)
-                #expect(cpu.A == payload.result)
-                #expect( cpu.readFlag(.Z) == payload.Z)
-                #expect( cpu.readFlag(.N) == payload.N)
-                #expect( cpu.readFlag(.C) == payload.C)
-                #expect( cpu.readFlag(.V) == payload.V)
+                let a = await cpu.A
+                let zFlag = await cpu.readFlag(.Z)
+                let nFlag = await cpu.readFlag(.N)
+                let cFlag = await cpu.readFlag(.C)
+                let vFlag = await cpu.readFlag(.V)
+
+                #expect(a == payload.result)
+                #expect(zFlag == payload.Z)
+                #expect(nFlag == payload.N)
+                #expect(cFlag == payload.C)
+                #expect(vFlag == payload.V)
             }
             useCarry.toggle()
         }
     }
     
     @Test func testADC_ZeroPageX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
 
         var useCarry = true
@@ -96,18 +108,24 @@ struct ADCDecimalTests {
                 memory[0x62] = payload.operand
                 
                 await cpu.runForTicks(4)
-                #expect(cpu.A == payload.result)
-                #expect( cpu.readFlag(.Z) == payload.Z)
-                #expect( cpu.readFlag(.N) == payload.N)
-                #expect( cpu.readFlag(.C) == payload.C)
-                #expect( cpu.readFlag(.V) == payload.V)
+                let a = await cpu.A
+                let zFlag = await cpu.readFlag(.Z)
+                let nFlag = await cpu.readFlag(.N)
+                let cFlag = await cpu.readFlag(.C)
+                let vFlag = await cpu.readFlag(.V)
+
+                #expect(a == payload.result)
+                #expect(zFlag == payload.Z)
+                #expect(nFlag == payload.N)
+                #expect(cFlag == payload.C)
+                #expect(vFlag == payload.V)
             }
             useCarry.toggle()
         }
     }
     
     @Test func testADC_Absolute() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
 
         var useCarry = true
@@ -125,18 +143,24 @@ struct ADCDecimalTests {
                 memory[0x1234] = payload.operand
                 
                 await cpu.runForTicks(4)
-                #expect(cpu.A == payload.result)
-                #expect( cpu.readFlag(.Z) == payload.Z)
-                #expect( cpu.readFlag(.N) == payload.N)
-                #expect( cpu.readFlag(.C) == payload.C)
-                #expect( cpu.readFlag(.V) == payload.V)
+                let a = await cpu.A
+                let zFlag = await cpu.readFlag(.Z)
+                let nFlag = await cpu.readFlag(.N)
+                let cFlag = await cpu.readFlag(.C)
+                let vFlag = await cpu.readFlag(.V)
+
+                #expect(a == payload.result)
+                #expect(zFlag == payload.Z)
+                #expect(nFlag == payload.N)
+                #expect(cFlag == payload.C)
+                #expect(vFlag == payload.V)
             }
             useCarry.toggle()
         }
     }
     
     @Test func testADC_AbsoluteX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
 
         var useCarry = true
@@ -155,11 +179,17 @@ struct ADCDecimalTests {
                 memory[0x1254] = payload.operand
                 
                 await cpu.runForTicks(4)
-                #expect(cpu.A == payload.result)
-                #expect( cpu.readFlag(.Z) == payload.Z)
-                #expect( cpu.readFlag(.N) == payload.N)
-                #expect( cpu.readFlag(.C) == payload.C)
-                #expect( cpu.readFlag(.V) == payload.V)
+                let a = await cpu.A
+                let zFlag = await cpu.readFlag(.Z)
+                let nFlag = await cpu.readFlag(.N)
+                let cFlag = await cpu.readFlag(.C)
+                let vFlag = await cpu.readFlag(.V)
+
+                #expect(a == payload.result)
+                #expect(zFlag == payload.Z)
+                #expect(nFlag == payload.N)
+                #expect(cFlag == payload.C)
+                #expect(vFlag == payload.V)
             }
             useCarry.toggle()
         }
@@ -176,15 +206,21 @@ struct ADCDecimalTests {
         memory[0x5710] = 0x32
         
         await cpu.runForTicks(5)
-        #expect(cpu.A == 0x58)
-        #expect( !cpu.readFlag(.Z))
-        #expect( !cpu.readFlag(.N))
-        #expect( !cpu.readFlag(.C))
-        #expect( !cpu.readFlag(.V))
+        let a = await cpu.A
+        let zFlag = await cpu.readFlag(.Z)
+        let nFlag = await cpu.readFlag(.N)
+        let cFlag = await cpu.readFlag(.C)
+        let vFlag = await cpu.readFlag(.V)
+
+        #expect(a == 0x58)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
+        #expect(cFlag == false)
+        #expect(vFlag == false)
     }
     
     @Test func testADC_AbsoluteY() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
 
         var useCarry = true
@@ -203,11 +239,17 @@ struct ADCDecimalTests {
                 memory[0x1254] = payload.operand
                 
                 await cpu.runForTicks(4)
-                #expect(cpu.A == payload.result)
-                #expect( cpu.readFlag(.Z) == payload.Z)
-                #expect( cpu.readFlag(.N) == payload.N)
-                #expect( cpu.readFlag(.C) == payload.C)
-                #expect( cpu.readFlag(.V) == payload.V)
+                let a = await cpu.A
+                let zFlag = await cpu.readFlag(.Z)
+                let nFlag = await cpu.readFlag(.N)
+                let cFlag = await cpu.readFlag(.C)
+                let vFlag = await cpu.readFlag(.V)
+
+                #expect(a == payload.result)
+                #expect(zFlag == payload.Z)
+                #expect(nFlag == payload.N)
+                #expect(cFlag == payload.C)
+                #expect(vFlag == payload.V)
             }
             useCarry.toggle()
         }
@@ -224,15 +266,21 @@ struct ADCDecimalTests {
         memory[0x5710] = 0x32
         
         await cpu.runForTicks(5)
-        #expect(cpu.A == 0x58)
-        #expect( !cpu.readFlag(.Z))
-        #expect( !cpu.readFlag(.N))
-        #expect( !cpu.readFlag(.C))
-        #expect( !cpu.readFlag(.V))
+        let a = await cpu.A
+        let zFlag = await cpu.readFlag(.Z)
+        let nFlag = await cpu.readFlag(.N)
+        let cFlag = await cpu.readFlag(.C)
+        let vFlag = await cpu.readFlag(.V)
+
+        #expect(a == 0x58)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
+        #expect(cFlag == false)
+        #expect(vFlag == false)
     }
     
     @Test func testADC_IndirectX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
 
         var useCarry = true
@@ -252,18 +300,24 @@ struct ADCDecimalTests {
                 memory[0x5678] = payload.operand
                 
                 await cpu.runForTicks(6)
-                #expect(cpu.A == payload.result)
-                #expect( cpu.readFlag(.Z) == payload.Z)
-                #expect( cpu.readFlag(.N) == payload.N)
-                #expect( cpu.readFlag(.C) == payload.C)
-                #expect( cpu.readFlag(.V) == payload.V)
+                let a = await cpu.A
+                let zFlag = await cpu.readFlag(.Z)
+                let nFlag = await cpu.readFlag(.N)
+                let cFlag = await cpu.readFlag(.C)
+                let vFlag = await cpu.readFlag(.V)
+
+                #expect(a == payload.result)
+                #expect(zFlag == payload.Z)
+                #expect(nFlag == payload.N)
+                #expect(cFlag == payload.C)
+                #expect(vFlag == payload.V)
             }
             useCarry.toggle()
         }
     }
     
     @Test func testADC_IndirectY() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
 
         var useCarry = true
@@ -283,11 +337,17 @@ struct ADCDecimalTests {
                 memory[0x5698] = payload.operand
                 
                 await cpu.runForTicks(5)
-                #expect(cpu.A == payload.result)
-                #expect( cpu.readFlag(.Z) == payload.Z)
-                #expect( cpu.readFlag(.N) == payload.N)
-                #expect( cpu.readFlag(.C) == payload.C)
-                #expect( cpu.readFlag(.V) == payload.V)
+                let a = await cpu.A
+                let zFlag = await cpu.readFlag(.Z)
+                let nFlag = await cpu.readFlag(.N)
+                let cFlag = await cpu.readFlag(.C)
+                let vFlag = await cpu.readFlag(.V)
+
+                #expect(a == payload.result)
+                #expect(zFlag == payload.Z)
+                #expect(nFlag == payload.N)
+                #expect(cFlag == payload.C)
+                #expect(vFlag == payload.V)
             }
             useCarry.toggle()
         }
@@ -305,10 +365,17 @@ struct ADCDecimalTests {
         memory[0x8910] = 0x42
         
         await cpu.runForTicks(6)
-        #expect(cpu.A == 0x99)
-        #expect( !cpu.readFlag(.Z))
-        #expect( cpu.readFlag(.N))
-        #expect( !cpu.readFlag(.C))
-        #expect( !cpu.readFlag(.V))
+        let a = await cpu.A
+        let zFlag = await cpu.readFlag(.Z)
+        let nFlag = await cpu.readFlag(.N)
+        let cFlag = await cpu.readFlag(.C)
+        let vFlag = await cpu.readFlag(.V)
+
+        #expect(a == 0x99)
+        #expect(zFlag == false)
+        #expect(nFlag == true)
+        #expect(cFlag == false)
+        #expect(vFlag == false)
     }
 }
+

@@ -19,7 +19,7 @@ struct SubtractHexTests {
     }
     
     func test_subtractHex(setCarryFlag: Bool) async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for i: UInt8 in 0..<0xFF {
@@ -54,7 +54,7 @@ struct SubtractHexTests {
                 if Int16(j) - Int16(i) - (setCarryFlag ? 0 : 1) >= 0 {
                     #expect(cFlag)
                 } else {
-                    #expect(cFlag)
+                    #expect(!cFlag)
                 }
                 
                 if (j ^ result) & (j ^ i) & 0x80 != 0 {

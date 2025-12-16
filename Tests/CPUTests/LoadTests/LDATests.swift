@@ -10,7 +10,7 @@ import Testing
 
 struct LDATests {
     @Test func testLDA_Immediate() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -19,14 +19,18 @@ struct LDATests {
             memory[0xA001] = testOutput.value
             
             await cpu.runForTicks(2)
-            #expect(cpu.A == testOutput.value)
-            #expect( cpu.readFlag(.Z) == testOutput.Z)
-            #expect( cpu.readFlag(.N) == testOutput.N)
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            
+            #expect(a == testOutput.value)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
     }
     
     @Test func testLDA_ZeroPage() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -36,14 +40,18 @@ struct LDATests {
             memory[0x42] = testOutput.value
             
             await cpu.runForTicks(3)
-            #expect(cpu.A == testOutput.value)
-            #expect( cpu.readFlag(.Z) == testOutput.Z)
-            #expect( cpu.readFlag(.N) == testOutput.N)
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            
+            #expect(a == testOutput.value)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
     }
     
     @Test func testLDA_ZeroPageX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -54,14 +62,18 @@ struct LDATests {
             memory[0x52] = testOutput.value
             
             await cpu.runForTicks(4)
-            #expect(cpu.A == testOutput.value)
-            #expect( cpu.readFlag(.Z) == testOutput.Z)
-            #expect( cpu.readFlag(.N) == testOutput.N)
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            
+            #expect(a == testOutput.value)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
     }
     
     @Test func testLDA_Absolute() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -72,14 +84,18 @@ struct LDATests {
             memory[0x1973] = testOutput.value
             
             await cpu.runForTicks(4)
-            #expect(cpu.A == testOutput.value)
-            #expect( cpu.readFlag(.Z) == testOutput.Z)
-            #expect( cpu.readFlag(.N) == testOutput.N)
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            
+            #expect(a == testOutput.value)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
     }
     
     @Test func testLDA_AbsoluteX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -92,10 +108,15 @@ struct LDATests {
             
             let oldTickcount = await cpu.tickcount
             await cpu.runForTicks(4)
-            #expect( cpu.tickcount - oldTickcount == 4)
-            #expect(cpu.A == testOutput.value)
-            #expect( cpu.readFlag(.Z) == testOutput.Z)
-            #expect( cpu.readFlag(.N) == testOutput.N)
+            let tickDelta = await cpu.tickcount - oldTickcount
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            
+            #expect(tickDelta == 4)
+            #expect(a == testOutput.value)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
         
         // Bonus page boundary crossing test.
@@ -108,14 +129,19 @@ struct LDATests {
         
         let oldTickcount = await cpu.tickcount
         await cpu.runForTicks(5)
-        #expect( cpu.tickcount - oldTickcount == 5)
-        #expect(cpu.A == 0x42)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == false)
+        let tickDelta = await cpu.tickcount - oldTickcount
+        let a = await cpu.A
+        let zFlag = await cpu.readFlag(.Z)
+        let nFlag = await cpu.readFlag(.N)
+        
+        #expect(tickDelta == 5)
+        #expect(a == 0x42)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
     }
     
     @Test func testLDA_AbsoluteY() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -128,10 +154,15 @@ struct LDATests {
             
             let oldTickcount = await cpu.tickcount
             await cpu.runForTicks(4)
-            #expect( cpu.tickcount - oldTickcount == 4)
-            #expect(cpu.A == testOutput.value)
-            #expect( cpu.readFlag(.Z) == testOutput.Z)
-            #expect( cpu.readFlag(.N) == testOutput.N)
+            let tickDelta = await cpu.tickcount - oldTickcount
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            
+            #expect(tickDelta == 4)
+            #expect(a == testOutput.value)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
         
         // Bonus page boundary crossing test.
@@ -144,14 +175,19 @@ struct LDATests {
         
         let oldTickcount = await cpu.tickcount
         await cpu.runForTicks(5)
-        #expect( cpu.tickcount - oldTickcount == 5)
-        #expect(cpu.A == 0x99)
-        #expect( cpu.readFlag(.Z) == false)
-        #expect( cpu.readFlag(.N) == true)
+        let tickDelta = await cpu.tickcount - oldTickcount
+        let a = await cpu.A
+        let zFlag = await cpu.readFlag(.Z)
+        let nFlag = await cpu.readFlag(.N)
+        
+        #expect(tickDelta == 5)
+        #expect(a == 0x99)
+        #expect(zFlag == false)
+        #expect(nFlag == true)
     }
     
     @Test func testLDA_IndirectX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -164,14 +200,18 @@ struct LDATests {
             memory[0x1969] = testOutput.value
             
             await cpu.runForTicks(6)
-            #expect(cpu.A == testOutput.value)
-            #expect( cpu.readFlag(.Z) == testOutput.Z)
-            #expect( cpu.readFlag(.N) == testOutput.N)
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            
+            #expect(a == testOutput.value)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
     }
     
     @Test func testLDA_IndirectY() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -185,10 +225,15 @@ struct LDATests {
             
             let oldTickcount = await cpu.tickcount
             await cpu.runForTicks(5)
-            #expect( cpu.tickcount - oldTickcount == 5)
-            #expect(cpu.A == testOutput.value)
-            #expect( cpu.readFlag(.Z) == testOutput.Z)
-            #expect( cpu.readFlag(.N) == testOutput.N)
+            let tickDelta = await cpu.tickcount - oldTickcount
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            
+            #expect(tickDelta == 5)
+            #expect(a == testOutput.value)
+            #expect(zFlag == testOutput.Z)
+            #expect(nFlag == testOutput.N)
         }
         
         // Bonus page boundary crossing test.
@@ -203,10 +248,15 @@ struct LDATests {
             
             let  oldTickcount = await cpu.tickcount
             await cpu.runForTicks(6)
-            #expect( cpu.tickcount - oldTickcount == 6)
-            #expect(cpu.A == 0x34)
-            #expect( cpu.readFlag(.Z) == false)
-            #expect( cpu.readFlag(.N) == false)
+            let tickDelta = await cpu.tickcount - oldTickcount
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            let nFlag = await cpu.readFlag(.N)
+            
+            #expect(tickDelta == 6)
+            #expect(a == 0x34)
+            #expect(zFlag == false)
+            #expect(nFlag == false)
         }
         
         // Bonus Y > 0x80 test.
@@ -221,9 +271,13 @@ struct LDATests {
             
             let oldTickcount = await cpu.tickcount
             await cpu.runForTicks(5)
-            #expect( cpu.tickcount - oldTickcount == 5)
-            #expect(cpu.A == 0x42)
-            #expect( cpu.readFlag(.Z) == false)
+            let tickDelta = await cpu.tickcount - oldTickcount
+            let a = await cpu.A
+            let zFlag = await cpu.readFlag(.Z)
+            
+            #expect(tickDelta == 5)
+            #expect(a == 0x42)
+            #expect(zFlag == false)
         }
     }
     

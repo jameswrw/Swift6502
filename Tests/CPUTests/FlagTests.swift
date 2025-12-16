@@ -10,92 +10,128 @@ import Testing
 
 struct FlagTests {
     @Test func testCLC() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.CLC.rawValue
         await cpu.setFlag(.C)
-        #expect( cpu.readFlag(.C) == true)
+        let cBefore = await cpu.readFlag(.C)
+        
+        #expect(cBefore == true)
         
         await cpu.runForTicks(2)
-        #expect(cpu.PC == 0xA001)
-        #expect( cpu.readFlag(.C) == false)
+        let pc = await cpu.PC
+        let cAfter = await cpu.readFlag(.C)
+        
+        #expect(pc == 0xA001)
+        #expect(cAfter == false)
     }
     
     @Test func testCLD() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.CLD.rawValue
         await cpu.setFlag(.D)
-        #expect( cpu.readFlag(.D) == true)
+        let dBefore = await cpu.readFlag(.D)
+        
+        #expect(dBefore == true)
         
         await cpu.runForTicks(2)
-        #expect(cpu.PC == 0xA001)
-        #expect( cpu.readFlag(.D) == false)
+        let pc = await cpu.PC
+        let dAfter = await cpu.readFlag(.D)
+        
+        #expect(pc == 0xA001)
+        #expect(dAfter == false)
     }
     
     @Test func testCLI() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
     
         memory[0xA000] = Opcodes6502.CLI.rawValue
-        #expect( cpu.readFlag(.I) == true)
+        let iBefore1 = await cpu.readFlag(.I)
+        #expect(iBefore1 == true)
         await cpu.setFlag(.I)
-        #expect( cpu.readFlag(.I) == true)
+        let iBefore2 = await cpu.readFlag(.I)
+        #expect(iBefore2 == true)
         
         await cpu.runForTicks(2)
-        #expect(cpu.PC == 0xA001)
-        #expect( cpu.readFlag(.I) == false)
+        let pc = await cpu.PC
+        let iAfter = await cpu.readFlag(.I)
+        
+        #expect(pc == 0xA001)
+        #expect(iAfter == false)
     }
     
     @Test func testCLV() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.CLV.rawValue
         await cpu.setFlag(.V)
-        #expect( cpu.readFlag(.V) == true)
+        let vBefore = await cpu.readFlag(.V)
+        
+        #expect(vBefore == true)
         
         await cpu.runForTicks(2)
-        #expect(cpu.PC == 0xA001)
-        #expect( cpu.readFlag(.V) == false)
+        let pc = await cpu.PC
+        let vAfter = await cpu.readFlag(.V)
+        
+        #expect(pc == 0xA001)
+        #expect(vAfter == false)
     }
     
     @Test func testSEC() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.SEC.rawValue
-        #expect( cpu.readFlag(.C) == false)
+        let cBefore = await cpu.readFlag(.C)
+        
+        #expect(cBefore == false)
         
         await cpu.runForTicks(2)
-        #expect(cpu.PC == 0xA001)
-        #expect( cpu.readFlag(.C) == true)
+        let pc = await cpu.PC
+        let cAfter = await cpu.readFlag(.C)
+        
+        #expect(pc == 0xA001)
+        #expect(cAfter == true)
     }
     
     @Test func testSED() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.SED.rawValue
-        #expect( cpu.readFlag(.D) == false)
+        let dBefore = await cpu.readFlag(.D)
+        
+        #expect(dBefore == false)
 
         await cpu.runForTicks(2)
-        #expect(cpu.PC == 0xA001)
-        #expect( cpu.readFlag(.D) == true)
+        let pc = await cpu.PC
+        let dAfter = await cpu.readFlag(.D)
+        
+        #expect(pc == 0xA001)
+        #expect(dAfter == true)
     }
     
     @Test func testSEI() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.SEI.rawValue
-        #expect( cpu.readFlag(.I) == true)
+        let iBefore = await cpu.readFlag(.I)
+        
+        #expect(iBefore == true)
         
         await cpu.runForTicks(2)
-        #expect(cpu.PC == 0xA001)
-        #expect( cpu.readFlag(.I) == true)
+        let pc = await cpu.PC
+        let iAfter = await cpu.readFlag(.I)
+        
+        #expect(pc == 0xA001)
+        #expect(iAfter == true)
 
     }
 }
+

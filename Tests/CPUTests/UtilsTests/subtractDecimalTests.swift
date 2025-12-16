@@ -19,7 +19,7 @@ struct SubtractDecimalTests {
     }
     
     func test_subtractDecimal(setCarryFlag: Bool) async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         await cpu.setFlag(.D)

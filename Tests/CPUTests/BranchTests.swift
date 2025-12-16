@@ -21,7 +21,7 @@ struct BranchTests {
     
     // All the flag tests are very similar, so consolidate them into a shared utility function.
     func testBranch(flag: Flags, branchIfFlagSet: Bool, opcode: Opcodes6502) async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Simple branch forwards.
@@ -34,12 +34,17 @@ struct BranchTests {
 
         // JMP to 0x1234
         await cpu.runForTicks(3)
-        #expect(cpu.PC == 0x1234)
+        let pcAfterJmp1 = await cpu.PC
+
+        #expect(pcAfterJmp1 == 0x1234)
         
         var oldTickcount = await cpu.tickcount
         await cpu.runForTicks(3)
-        #expect(cpu.PC == 0x1246)
-        #expect( cpu.tickcount == oldTickcount + 3)
+        let pcAfterBranchFwd = await cpu.PC
+        let tickDelta1 = await cpu.tickcount - oldTickcount
+
+        #expect(pcAfterBranchFwd == 0x1246)
+        #expect(tickDelta1 == 3)
 
         // Simple branch backwards.
         await cpu.reset()
@@ -52,12 +57,17 @@ struct BranchTests {
         
         // JMP to 0x1234
         await cpu.runForTicks(3)
-        #expect(cpu.PC == 0x1234)
+        let pcAfterJmp2 = await cpu.PC
+
+        #expect(pcAfterJmp2 == 0x1234)
         
         oldTickcount = await cpu.tickcount
         await cpu.runForTicks(3)
-        #expect(cpu.PC == 0x1226)
-        #expect( cpu.tickcount == oldTickcount + 3)
+        let pcAfterBranchBack = await cpu.PC
+        let tickDelta2 = await cpu.tickcount - oldTickcount
+
+        #expect(pcAfterBranchBack == 0x1226)
+        #expect(tickDelta2 == 3)
         
         // Branch forwards with a page change.
         await cpu.reset()
@@ -70,13 +80,18 @@ struct BranchTests {
 
         // JMP to 0x10F0
         await cpu.runForTicks(3)
-        #expect(cpu.PC == 0x10F0)
+        let pcAfterJmp3 = await cpu.PC
+
+        #expect(pcAfterJmp3 == 0x10F0)
         
         let ticks = (opcode == .BVC ? 3 : 4)
         oldTickcount = await cpu.tickcount
         await cpu.runForTicks(ticks)
-        #expect(cpu.PC == 0x1102)
-        #expect( cpu.tickcount == oldTickcount + ticks)
+        let pcAfterBranchFwdPg = await cpu.PC
+        let tickDelta3 = await cpu.tickcount - oldTickcount
+
+        #expect(pcAfterBranchFwdPg == 0x1102)
+        #expect(tickDelta3 == ticks)
         
         // Branch backwards with a page change.
         await cpu.reset()
@@ -89,12 +104,17 @@ struct BranchTests {
 
         // JMP to 0x1010
         await cpu.runForTicks(3)
-        #expect(cpu.PC == 0x1010)
+        let pcAfterJmp4 = await cpu.PC
+
+        #expect(pcAfterJmp4 == 0x1010)
         
         oldTickcount = await cpu.tickcount
         await cpu.runForTicks(ticks)
-        #expect(cpu.PC == 0xFF2)
-        #expect( cpu.tickcount == oldTickcount + ticks)
+        let pcAfterBranchBackPg = await cpu.PC
+        let tickDelta4 = await cpu.tickcount - oldTickcount
+
+        #expect(pcAfterBranchBackPg == 0xFF2)
+        #expect(tickDelta4 == ticks)
         
         // Test no branch if flag state is different from branchIfFlagSet.
         await cpu.reset()
@@ -107,12 +127,17 @@ struct BranchTests {
 
         // JMP to 0x1234
         await cpu.runForTicks(3)
-        #expect(cpu.PC == 0x1234)
+        let pcAfterJmp5 = await cpu.PC
+
+        #expect(pcAfterJmp5 == 0x1234)
         
         oldTickcount = await cpu.tickcount
         await cpu.runForTicks(2)
-        #expect(cpu.PC == 0x1236)
-        #expect( cpu.tickcount == oldTickcount + 2)
+        let pcAfterNoBranch = await cpu.PC
+        let tickDelta5 = await cpu.tickcount - oldTickcount
+
+        #expect(pcAfterNoBranch == 0x1236)
+        #expect(tickDelta5 == 2)
     }
     
     @Test func testBCC() async throws {
@@ -147,3 +172,4 @@ struct BranchTests {
         try await testBranch(flag: .V, branchIfFlagSet: true, opcode: .BVS)
     }
 }
+

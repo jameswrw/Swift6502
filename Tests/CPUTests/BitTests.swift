@@ -16,9 +16,9 @@ struct BitTests {
         let V: Bool
     }
     
-    func testBIT_ZeroPage(value: UInt8, expectedFlags: ExpectedFlags) {
+    func testBIT_ZeroPage(value: UInt8, expectedFlags: ExpectedFlags) async {
         
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Z = 0, N == 0, V == 0
@@ -28,14 +28,18 @@ struct BitTests {
         await cpu.setA(0x06)
         
         await cpu.runForTicks(3)
-        #expect( cpu.readFlag(.Z) == expectedFlags.Z)
-        #expect( cpu.readFlag(.N) == expectedFlags.N)
-        #expect( cpu.readFlag(.V) == expectedFlags.V)
+        let zFlag = await cpu.readFlag(.Z)
+        let nFlag = await cpu.readFlag(.N)
+        let vFlag = await cpu.readFlag(.V)
+        
+        #expect(zFlag == expectedFlags.Z)
+        #expect(nFlag == expectedFlags.N)
+        #expect(vFlag == expectedFlags.V)
     }
     
-    func testBIT_Absolute(value: UInt8, expectedFlags: ExpectedFlags) {
+    func testBIT_Absolute(value: UInt8, expectedFlags: ExpectedFlags) async {
         
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         // Z = 0, N == 0, V == 0
@@ -47,31 +51,35 @@ struct BitTests {
         await cpu.setA(0x06)
         
         await cpu.runForTicks(4)
-        #expect( cpu.readFlag(.Z) == expectedFlags.Z)
-        #expect( cpu.readFlag(.N) == expectedFlags.N)
-        #expect( cpu.readFlag(.V) == expectedFlags.V)
+        let zFlag = await cpu.readFlag(.Z)
+        let nFlag = await cpu.readFlag(.N)
+        let vFlag = await cpu.readFlag(.V)
+        
+        #expect(zFlag == expectedFlags.Z)
+        #expect(nFlag == expectedFlags.N)
+        #expect(vFlag == expectedFlags.V)
     }
     
     @Test func testBIT_ZeroPage() async throws {
-        testBIT_ZeroPage(value: 0x06, expectedFlags: ExpectedFlags(Z: false, N: false, V: false))
-        testBIT_ZeroPage(value: 0x46, expectedFlags: ExpectedFlags(Z: false, N: false, V: true))
-        testBIT_ZeroPage(value: 0x86, expectedFlags: ExpectedFlags(Z: false, N: true, V: false))
-        testBIT_ZeroPage(value: 0xC6, expectedFlags: ExpectedFlags(Z: false, N: true, V: true))
-        testBIT_ZeroPage(value: 0x08, expectedFlags: ExpectedFlags(Z: true, N: false, V: false))
-        testBIT_ZeroPage(value: 0x48, expectedFlags: ExpectedFlags(Z: true, N: false, V: true))
-        testBIT_ZeroPage(value: 0x88, expectedFlags: ExpectedFlags(Z: true, N: true, V: false))
-        testBIT_ZeroPage(value: 0xC8, expectedFlags: ExpectedFlags(Z: true, N: true, V: true))
+        await testBIT_ZeroPage(value: 0x06, expectedFlags: ExpectedFlags(Z: false, N: false, V: false))
+        await testBIT_ZeroPage(value: 0x46, expectedFlags: ExpectedFlags(Z: false, N: false, V: true))
+        await testBIT_ZeroPage(value: 0x86, expectedFlags: ExpectedFlags(Z: false, N: true, V: false))
+        await testBIT_ZeroPage(value: 0xC6, expectedFlags: ExpectedFlags(Z: false, N: true, V: true))
+        await testBIT_ZeroPage(value: 0x08, expectedFlags: ExpectedFlags(Z: true, N: false, V: false))
+        await testBIT_ZeroPage(value: 0x48, expectedFlags: ExpectedFlags(Z: true, N: false, V: true))
+        await testBIT_ZeroPage(value: 0x88, expectedFlags: ExpectedFlags(Z: true, N: true, V: false))
+        await testBIT_ZeroPage(value: 0xC8, expectedFlags: ExpectedFlags(Z: true, N: true, V: true))
     }
     
     @Test func testBIT_Absolute() async throws {
-        testBIT_Absolute(value: 0x06, expectedFlags: ExpectedFlags(Z: false, N: false, V: false))
-        testBIT_Absolute(value: 0x46, expectedFlags: ExpectedFlags(Z: false, N: false, V: true))
-        testBIT_Absolute(value: 0x86, expectedFlags: ExpectedFlags(Z: false, N: true, V: false))
-        testBIT_Absolute(value: 0xC6, expectedFlags: ExpectedFlags(Z: false, N: true, V: true))
-        testBIT_Absolute(value: 0x08, expectedFlags: ExpectedFlags(Z: true, N: false, V: false))
-        testBIT_Absolute(value: 0x48, expectedFlags: ExpectedFlags(Z: true, N: false, V: true))
-        testBIT_Absolute(value: 0x88, expectedFlags: ExpectedFlags(Z: true, N: true, V: false))
-        testBIT_Absolute(value: 0xC8, expectedFlags: ExpectedFlags(Z: true, N: true, V: true))
+        await testBIT_Absolute(value: 0x06, expectedFlags: ExpectedFlags(Z: false, N: false, V: false))
+        await testBIT_Absolute(value: 0x46, expectedFlags: ExpectedFlags(Z: false, N: false, V: true))
+        await testBIT_Absolute(value: 0x86, expectedFlags: ExpectedFlags(Z: false, N: true, V: false))
+        await testBIT_Absolute(value: 0xC6, expectedFlags: ExpectedFlags(Z: false, N: true, V: true))
+        await testBIT_Absolute(value: 0x08, expectedFlags: ExpectedFlags(Z: true, N: false, V: false))
+        await testBIT_Absolute(value: 0x48, expectedFlags: ExpectedFlags(Z: true, N: false, V: true))
+        await testBIT_Absolute(value: 0x88, expectedFlags: ExpectedFlags(Z: true, N: true, V: false))
+        await testBIT_Absolute(value: 0xC8, expectedFlags: ExpectedFlags(Z: true, N: true, V: true))
     }
     
 }

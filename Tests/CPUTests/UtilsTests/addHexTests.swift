@@ -19,7 +19,7 @@ struct AddHexTests {
     }
     
     func test_addHex(setCarryFlag: Bool) async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for i: UInt8 in 0..<0xFF {

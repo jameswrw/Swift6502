@@ -10,7 +10,7 @@ import Testing
 
 struct MiscTests {
     @Test func testNOP() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         memory[0xA000] = Opcodes6502.NOP.rawValue

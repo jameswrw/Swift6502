@@ -19,7 +19,7 @@ struct AddDecimalTests {
     }
     
     func test_addDecimal(setCarryFlag: Bool) async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         await cpu.setFlag(.D)

@@ -10,7 +10,7 @@ import Testing
 
 struct TestLDY {
     @Test func testLDX_Immediate() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -30,7 +30,7 @@ struct TestLDY {
     }
     
     @Test func testLDX_ZeroPage() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -51,7 +51,7 @@ struct TestLDY {
     }
     
     @Test func testLDY_ZeroPageX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -73,7 +73,7 @@ struct TestLDY {
     }
     
     @Test func testLDY_Absolute() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {
@@ -95,7 +95,7 @@ struct TestLDY {
     }
     
     @Test func testLDY_AbsoluteX() async throws {
-        let (cpu, memory) = initCPU()
+        let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }
         
         for testOutput in loadTestOutputs {

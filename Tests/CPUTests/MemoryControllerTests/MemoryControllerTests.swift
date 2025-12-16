@@ -11,14 +11,16 @@ import Testing
 struct MemoryControllerTests {
     
     @Test func testIORead() async throws {
-        let (cpu, memory) = initCPU(ioAddresses: [0x2000, 0x2001])
+        let (cpu, memory) = await initCPU(ioAddresses: [0x2000, 0x2001])
         defer { memory.deallocate() }
         
-        cpu.setIOReadCallback { address in
+        let baseAddr = UInt(bitPattern: memory)
+        await cpu.setIOReadCallback { @Sendable address in
+            let ptr = UnsafeMutablePointer<UInt8>(bitPattern: baseAddr)!
             if address == 0x2000 {
-                memory[0x3000] = 0x22
+                ptr.advanced(by: 0x3000).pointee = 0x22
             } else if address == 0x2001 {
-                memory[0x3001] = 0x33
+                ptr.advanced(by: 0x3001).pointee = 0x33
             }
             return 0x42
         }
@@ -31,43 +33,54 @@ struct MemoryControllerTests {
         // Note: Memory accesses are via cpu.memoryController sees them.
         //       Directly reading from memory is, well, a DMA and the ioCallbacks will not be called.
         
-        cpu.memory[0xA000] = Opcodes6502.JMP_Absolute.rawValue
-        cpu.memory[0xA001] = 0x00
-        cpu.memory[0xA002] = 0x10
-        cpu.memory[0x1000] = Opcodes6502.LDA_Absolute.rawValue
-        cpu.memory[0x1001] = 0x00
-        cpu.memory[0x1002] = 0x20
-        cpu.memory[0x1003] = Opcodes6502.LDA_Absolute.rawValue
-        cpu.memory[0x1004] = 0x01
-        cpu.memory[0x1005] = 0x20
+        await cpu.writeMemory(address: 0xA000, value: Opcodes6502.JMP_Absolute.rawValue)
+        await cpu.writeMemory(address: 0xA001, value: 0x00)
+        await cpu.writeMemory(address: 0xA002, value: 0x10)
+        await cpu.writeMemory(address: 0x1000, value: Opcodes6502.LDA_Absolute.rawValue)
+        await cpu.writeMemory(address: 0x1001, value: 0x00)
+        await cpu.writeMemory(address: 0x1002, value: 0x20)
+        await cpu.writeMemory(address: 0x1003, value: Opcodes6502.LDA_Absolute.rawValue)
+        await cpu.writeMemory(address: 0x1004, value: 0x01)
+        await cpu.writeMemory(address: 0x1005, value: 0x20)
         
-        #expect(cpu.memory[0x3000] == 0xFF)
-        #expect(cpu.memory[0x3001] == 0xFF)
+        var memory3000 = await cpu.readMemory(address: 0x3000)
+        var memory3001 = await cpu.readMemory(address: 0x3001)
+        #expect(memory3000 == 0xFF)
+        #expect(memory3001 == 0xFF)
         
         // JMP
         await cpu.runForTicks(3)
-        #expect(cpu.PC == 0x1000)
+        let pc = await cpu.PC
+        #expect(pc == 0x1000)
         
         // LDA
         await cpu.runForTicks(4)
-        #expect(cpu.memory[0x3000] == 0x22)
-        #expect(cpu.memory[0x3001] == 0xFF)
+        
+        memory3000 = await cpu.readMemory(address: 0x3000)
+        memory3001 = await cpu.readMemory(address: 0x3001)
+        #expect(memory3000 == 0x22)
+        #expect(memory3001 == 0xFF)
         
         // LDA
         await cpu.runForTicks(4)
-        #expect(cpu.memory[0x3000] == 0x22)
-        #expect(cpu.memory[0x3001] == 0x33)
+        
+        memory3000 = await cpu.readMemory(address: 0x3000)
+        memory3001 = await cpu.readMemory(address: 0x3001)
+        #expect(memory3000 == 0x22)
+        #expect(memory3001 == 0x33)
     }
     
     @Test func testIOWrite() async throws {
-        let (cpu, memory) = initCPU(ioAddresses: [0x2000, 0x2001])
+        let (cpu, memory) = await initCPU(ioAddresses: [0x2000, 0x2001])
         defer { memory.deallocate() }
         
-        cpu.setIOWriteCallback { address, value in
+        let baseAddr = UInt(bitPattern: memory)
+        await cpu.setIOWriteCallback { @Sendable address, value in
+            let ptr = UnsafeMutablePointer<UInt8>(bitPattern: baseAddr)!
             if address == 0x2000 {
-                memory[0x3002] = 0xAB
+                ptr.advanced(by: 0x3002).pointee = 0xAB
             } else if address == 0x2001 {
-                memory[0x3003] = 0xCD
+                ptr.advanced(by: 0x3003).pointee = 0xCD
             }
             return value
         }
@@ -77,31 +90,39 @@ struct MemoryControllerTests {
         // • Writing to 0x2000 causes cpu.memory.ioReadCallback to set 0x3002 to 0xAB.
         // • Writing to 0x2001 causes cpu.memory.ioReadCallback to set 0x3003 to 0xCD.
         //
-        // Note: Memory accesses are via cpu.memoryController sees them.
+        // Note: Memory accesses via cpu.memoryController trigget the callbacks.
         //       Directly reading from memory is, well, a DMA and the ioCallbacks will not be called.
         
-        cpu.memory[0xA000] = Opcodes6502.JMP_Absolute.rawValue
-        cpu.memory[0xA001] = 0x00
-        cpu.memory[0xA002] = 0x10
-        cpu.memory[0x1000] = Opcodes6502.STA_Absolute.rawValue
-        cpu.memory[0x1001] = 0x00
-        cpu.memory[0x1002] = 0x20
-        cpu.memory[0x1003] = Opcodes6502.STA_Absolute.rawValue
-        cpu.memory[0x1004] = 0x01
-        cpu.memory[0x1005] = 0x20
+        await cpu.writeMemory(address: 0xA000, value: Opcodes6502.JMP_Absolute.rawValue)
+        await cpu.writeMemory(address: 0xA001, value: 0x00)
+        await cpu.writeMemory(address: 0xA002, value: 0x10)
+        await cpu.writeMemory(address: 0x1000, value: Opcodes6502.STA_Absolute.rawValue)
+        await cpu.writeMemory(address: 0x1001, value: 0x00)
+        await cpu.writeMemory(address: 0x1002, value: 0x20)
+        await cpu.writeMemory(address: 0x1003, value: Opcodes6502.STA_Absolute.rawValue)
+        await cpu.writeMemory(address: 0x1004, value: 0x01)
+        await cpu.writeMemory(address: 0x1005, value: 0x20)
         
-        #expect(cpu.memory[0x3002] == 0xFF)
-        #expect(cpu.memory[0x3003] == 0xFF)
+        var memory3002 = await cpu.readMemory(address: 0x3002)
+        var memory3003 = await cpu.readMemory(address: 0x3003)
+        #expect(memory3002 == 0xFF)
+        #expect(memory3003 == 0xFF)
         
         await cpu.runForTicks(3)
-        #expect(cpu.PC == 0x1000)
+        let pc = await cpu.PC
+        #expect(pc == 0x1000)
         
         await cpu.runForTicks(4)
-        #expect(cpu.memory[0x3002] == 0xAB)
-        #expect(cpu.memory[0x3003] == 0xFF)
+        memory3002 = await cpu.readMemory(address: 0x3002)
+        memory3003 = await cpu.readMemory(address: 0x3003)
+        #expect(memory3002 == 0xAB)
+        #expect(memory3003 == 0xFF)
         
         await cpu.runForTicks(4)
-        #expect(cpu.memory[0x3002] == 0xAB)
-        #expect(cpu.memory[0x3003] == 0xCD)
+        memory3002 = await cpu.readMemory(address: 0x3002)
+        memory3003 = await cpu.readMemory(address: 0x3003)
+        #expect(memory3002 == 0xAB)
+        #expect(memory3003 == 0xCD)
     }
 }
+
