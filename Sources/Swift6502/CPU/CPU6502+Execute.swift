@@ -124,13 +124,13 @@ public extension CPU6502 {
                 tickcount += 4
             case .LDA_AbsoluteX:
                 let baseAddress = nextWord()
-                let targetAddress = addSignedByte(baseAddress, X)
+                let targetAddress = baseAddress &+ UInt16(X)
                 A = memory[Int(targetAddress)]
                 updateNZFlagsFor(newValue: A)
                 tickcount += samePage(address1: baseAddress, address2: targetAddress) ? 4 : 5
             case .LDA_AbsoluteY:
                 let baseAddress = nextWord()
-                let targetAddress = addSignedByte(baseAddress, Y)
+                let targetAddress = baseAddress &+ UInt16(Y)
                 A = memory[Int(targetAddress)]
                 updateNZFlagsFor(newValue: A)
                 tickcount += samePage(address1: baseAddress, address2: targetAddress) ? 4 : 5
@@ -174,7 +174,7 @@ public extension CPU6502 {
                 tickcount += 4
             case .LDX_AbsoluteY:
                 let baseAddress = nextWord()
-                let targetAddress = addSignedByte(baseAddress, Y)
+                let targetAddress = baseAddress &+ UInt16(Y)
                 X = memory[Int(targetAddress)]
                 updateNZFlagsFor(newValue: X)
                 tickcount += samePage(address1: baseAddress, address2: targetAddress) ? 0 : 1
@@ -199,7 +199,7 @@ public extension CPU6502 {
                 tickcount += 4
             case .LDY_AbsoluteX:
                 let baseAddress = nextWord()
-                let targetAddress = addSignedByte(baseAddress, X)
+                let targetAddress = baseAddress &+ UInt16(X)
                 Y = memory[Int(targetAddress)]
                 updateNZFlagsFor(newValue: Y)
                 tickcount += samePage(address1: baseAddress, address2: targetAddress) ? 0 : 1
@@ -377,14 +377,14 @@ public extension CPU6502 {
             case .ADC_AbsoluteX:
                 if readFlag(.D) {
                     let baseAddress = nextWord()
-                    let targetAddress = addSignedByte(baseAddress, X)
+                    let targetAddress = baseAddress &+ UInt16(X)
                     A = addDecimal(memory[Int(targetAddress)], to: A)
                     if !samePage(address1: baseAddress, address2: targetAddress) {
                         tickcount += 1
                     }
                 } else {
                     let baseAddress = nextWord()
-                    let targetAddress = addSignedByte(baseAddress, X)
+                    let targetAddress = baseAddress &+ UInt16(X)
                     A = addHex(memory[Int(targetAddress)], to: A)
                     if !samePage(address1: baseAddress, address2: targetAddress) {
                         tickcount += 1
@@ -394,14 +394,14 @@ public extension CPU6502 {
             case .ADC_AbsoluteY:
                 if readFlag(.D) {
                     let baseAddress = nextWord()
-                    let targetAddress = addSignedByte(baseAddress, Y)
+                    let targetAddress = baseAddress &+ UInt16(Y)
                     A = addDecimal(memory[Int(targetAddress)], to: A)
                     if !samePage(address1: baseAddress, address2: targetAddress) {
                         tickcount += 1
                     }
                 } else {
                     let baseAddress = nextWord()
-                    let targetAddress = addSignedByte(baseAddress, Y)
+                    let targetAddress = baseAddress &+ UInt16(Y)
                     A = addHex(memory[Int(targetAddress)], to: A)
                     if !samePage(address1: baseAddress, address2: targetAddress) {
                         tickcount += 1
@@ -487,14 +487,14 @@ public extension CPU6502 {
             case .SBC_AbsoluteX:
                 if readFlag(.D) {
                     let baseAddress = nextWord()
-                    let targetAddress = addSignedByte(baseAddress, X)
+                    let targetAddress = baseAddress &+ UInt16(X)
                     A = subtractDecimal(memory[Int(targetAddress)], from: A)
                     if !samePage(address1: baseAddress, address2: targetAddress) {
                         tickcount += 1
                     }
                 } else {
                     let baseAddress = nextWord()
-                    let targetAddress = addSignedByte(baseAddress, X)
+                    let targetAddress = baseAddress &+ UInt16(X)
                     A = subtractHex(memory[Int(targetAddress)], from: A)
                     if !samePage(address1: baseAddress, address2: targetAddress) {
                         tickcount += 1
@@ -504,14 +504,14 @@ public extension CPU6502 {
             case .SBC_AbsoluteY:
                 if readFlag(.D) {
                     let baseAddress = nextWord()
-                    let targetAddress = addSignedByte(baseAddress, Y)
+                    let targetAddress = baseAddress &+ UInt16(Y)
                     A = subtractDecimal(memory[Int(targetAddress)], from: A)
                     if !samePage(address1: baseAddress, address2: targetAddress) {
                         tickcount += 1
                     }
                 } else {
                     let baseAddress = nextWord()
-                    let targetAddress = addSignedByte(baseAddress, Y)
+                    let targetAddress = baseAddress &+ UInt16(Y)
                     A = subtractHex(memory[Int(targetAddress)], from: A)
                     if !samePage(address1: baseAddress, address2: targetAddress) {
                         tickcount += 1
@@ -671,7 +671,7 @@ public extension CPU6502 {
                 updateNZFlagsFor(newValue: A)
                 tickcount += 3
             case .AND_ZeroPageX:
-                A = A & memory[Int(addSignedByte(UInt16(nextByte()), X))]
+                A = A & memory[Int(nextByte() &+ X)]
                 updateNZFlagsFor(newValue: A)
                 tickcount += 4
             case .AND_Absolute:
@@ -680,13 +680,13 @@ public extension CPU6502 {
                 tickcount += 4
             case .AND_AbsoluteX:
                 let baseAddress = nextWord()
-                let targetAddress = addSignedByte(baseAddress, X)
+                let targetAddress = baseAddress &+ UInt16(X)
                 A = A & memory[Int(targetAddress)]
                 updateNZFlagsFor(newValue: A)
                 tickcount += samePage(address1: baseAddress, address2: targetAddress) ? 4 : 5
             case .AND_AbsoluteY:
                 let baseAddress = nextWord()
-                let targetAddress = addSignedByte(baseAddress, Y)
+                let targetAddress = baseAddress &+ UInt16(Y)
                 A = A & memory[Int(targetAddress)]
                 updateNZFlagsFor(newValue: A)
                 tickcount += samePage(address1: baseAddress, address2: targetAddress) ? 4 : 5
@@ -721,7 +721,7 @@ public extension CPU6502 {
                 updateNZFlagsFor(newValue: A)
                 tickcount += 3
             case .ORA_ZeroPageX:
-                A = A | memory[Int(addSignedByte(UInt16(nextByte()), X))]
+                A = A | memory[Int(nextByte() &+ X)]
                 updateNZFlagsFor(newValue: A)
                 tickcount += 4
             case .ORA_Absolute:
@@ -730,13 +730,13 @@ public extension CPU6502 {
                 tickcount += 4
             case .ORA_AbsoluteX:
                 let baseAddress = nextWord()
-                let targetAddress = addSignedByte(baseAddress, X)
+                let targetAddress = baseAddress &+ UInt16(X)
                 A = A | memory[Int(targetAddress)]
                 updateNZFlagsFor(newValue: A)
                 tickcount += samePage(address1: baseAddress, address2: targetAddress) ? 4 : 5
             case .ORA_AbsoluteY:
                 let baseAddress = nextWord()
-                let targetAddress = addSignedByte(baseAddress, Y)
+                let targetAddress = baseAddress &+ UInt16(Y)
                 A = A | memory[Int(targetAddress)]
                 updateNZFlagsFor(newValue: A)
                 tickcount += samePage(address1: baseAddress, address2: targetAddress) ? 4 : 5
@@ -771,7 +771,7 @@ public extension CPU6502 {
                 updateNZFlagsFor(newValue: A)
                 tickcount += 3
             case .EOR_ZeroPageX:
-                A = A ^ memory[Int(addSignedByte(UInt16(nextByte()), X))]
+                A = A ^ memory[Int(nextByte() &+ X)]
                 updateNZFlagsFor(newValue: A)
                 tickcount += 4
             case .EOR_Absolute:
@@ -780,13 +780,13 @@ public extension CPU6502 {
                 tickcount += 4
             case .EOR_AbsoluteX:
                 let baseAddress = nextWord()
-                let targetAddress = addSignedByte(baseAddress, X)
+                let targetAddress = baseAddress &+ UInt16(X)
                 A = A ^ memory[Int(targetAddress)]
                 updateNZFlagsFor(newValue: A)
                 tickcount += samePage(address1: baseAddress, address2: targetAddress) ? 4 : 5
             case .EOR_AbsoluteY:
                 let baseAddress = nextWord()
-                let targetAddress = addSignedByte(baseAddress, Y)
+                let targetAddress = baseAddress &+ UInt16(Y)
                 A = A ^ memory[Int(targetAddress)]
                 updateNZFlagsFor(newValue: A)
                 tickcount += samePage(address1: baseAddress, address2: targetAddress) ? 4 : 5
@@ -822,7 +822,7 @@ public extension CPU6502 {
                 compare(value, withRegister: A)
                 tickcount += 3
             case .CMP_ZeroPageX:
-                let address = addSignedByte(UInt16(nextByte()), X)
+                let address = nextByte() &+ X
                 let value = memory[Int(address)]
                 compare(value, withRegister: A)
                 tickcount += 4
@@ -832,13 +832,13 @@ public extension CPU6502 {
                 tickcount += 4
             case .CMP_AbsoluteX:
                 let baseAddress = nextWord()
-                let targetAddesss = addSignedByte(baseAddress, X)
+                let targetAddesss = baseAddress &+ UInt16(X)
                 let value = memory[Int(targetAddesss)]
                 compare(value, withRegister: A)
                 tickcount += samePage(address1: baseAddress, address2: targetAddesss) ? 4 : 5
             case .CMP_AbsoluteY:
                 let baseAddress = nextWord()
-                let targetAddesss = addSignedByte(baseAddress, Y)
+                let targetAddesss = baseAddress &+ UInt16(Y)
                 let value = memory[Int(targetAddesss)]
                 compare(value, withRegister: A)
                 tickcount += samePage(address1: baseAddress, address2: targetAddesss) ? 4 : 5
@@ -893,16 +893,16 @@ public extension CPU6502 {
                 memory[Int(nextByte())] = A
                 tickcount += 3
             case .STA_ZeroPageX:
-                memory[Int(addSignedByte(UInt16(nextByte()), X))] = A
+                memory[Int(nextByte() &+ X)] = A
                 tickcount += 4
             case .STA_Absolute:
                 memory[Int(nextWord())] = A
                 tickcount += 4
             case .STA_AbsoluteX:
-                memory[Int(addSignedByte(nextWord(), X))] = A
+                memory[Int(nextWord() &+ UInt16(X))] = A
                 tickcount += 5
             case .STA_AbsoluteY:
-                memory[Int(addSignedByte(nextWord(), Y))] = A
+                memory[Int(nextWord() &+ UInt16(Y))] = A
                 tickcount += 5
             case .STA_IndirectX:
                 writeValueTo(
@@ -935,7 +935,7 @@ public extension CPU6502 {
                 tickcount += 3
                 memory[Int(nextByte())] = Y
             case .STY_ZeroPageX:
-                memory[Int(addSignedByte(UInt16(nextByte()), X))] = Y
+                memory[Int(nextByte() &+ X)] = Y
                 tickcount += 4
             case .STY_Absolute:
                 memory[Int(nextWord())] = Y
