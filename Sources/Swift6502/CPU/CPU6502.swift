@@ -5,7 +5,15 @@
 //  Created by James Weatherley on 28/10/2025.
 //
 
-public typealias OpCodeHook = @Sendable (_: UInt16, _: Opcodes6502) -> Void
+public typealias OpCodeHook = @Sendable (
+    _: UInt16,          // PC
+    _: Opcodes6502,     // Opcode
+    _: UInt8,           // A
+    _: UInt8,           // X
+    _: UInt8,           // Y
+    _: UInt8,           // Flags,
+    _: UInt8            // SP
+) -> Void
 
 public actor CPU6502 {
     

@@ -102,7 +102,7 @@ public extension CPU6502 {
             
             let pc = PC
             let opCode = nextOpcode()
-            opCodeHook?(pc, opCode)
+            opCodeHook?(pc, opCode, A, X, Y, F, SP)
             
             switch opCode {
                 // MARK: LDA
