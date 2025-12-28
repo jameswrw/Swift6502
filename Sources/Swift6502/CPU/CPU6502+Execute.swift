@@ -298,7 +298,7 @@ public extension CPU6502 {
                 A = popByte()
                 tickcount += 4
             case .PHP:
-                pushByte(F)
+                pushByte(F | Flags.One.rawValue | Flags.B.rawValue)
                 tickcount += 3
             case .PLP:
                 F = popByte()

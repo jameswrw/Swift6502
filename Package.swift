@@ -37,7 +37,8 @@ let package = Package(
         ),
         .testTarget(
             name: "CPUTests",
-            dependencies: ["Swift6502"], // removed "CPUMacroDecls",
+            dependencies: ["Swift6502"],
+            resources: [.copy("Resources/6502_functional_test.bin")],
             swiftSettings: [.unsafeFlags(["-strict-concurrency=complete", "-warnings-as-errors"])]
         )
     ]
