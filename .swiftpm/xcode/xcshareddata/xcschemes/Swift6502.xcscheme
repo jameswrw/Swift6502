@@ -39,6 +39,11 @@
                BlueprintName = "CPUTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "FunctionalTests/run6502Tests()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

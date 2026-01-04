@@ -38,12 +38,25 @@ extension CPU6502 {
         }
     }
     
-    internal func readWord(addr: Int) -> UInt16 {
+    internal func readWord(addr: Int, jmpIndirectBug: Bool = false) -> UInt16 {
+        
+        // From: http://www.6502.org/tutorials/6502opcodes.html#JMP
+        // AN INDIRECT JUMP MUST NEVER USE A
+        // VECTOR BEGINNING ON THE LAST BYTE
+        // OF A PAGE
+        // For example if address $3000 contains $40, $30FF contains $80, and $3100 contains $50, the result of JMP ($30FF) will be a transfer of control to $4080 rather than $5080 as you intended i.e. the 6502 took the low byte of the address from $30FF and the high byte from $3000.
+        
+        // The all caps warning is all very well, but we must implement the bug, as it does get used.
         
         var word: UInt16
         if endianness == .little {
+            var hi: UInt8
             let lo: UInt8 = memory[addr]
-            let hi: UInt8 = memory[addr + 1]
+            if jmpIndirectBug && (addr & 0xFF) == 0xFF {
+                hi = memory[addr & 0xFF00]
+            } else {
+                hi = memory[addr + 1]
+            }
             word = UInt16(lo) | (UInt16(hi) << 8)
         } else {
             let hi: UInt8 = memory[addr]

@@ -210,15 +210,7 @@ public extension CPU6502 {
                 PC = nextWord()
                 tickcount += 3
             case .JMP_Indirect:
-                // TODO: The following is not implemented.
-                //
-                // From: http://www.6502.org/tutorials/6502opcodes.html#INC
-                // AN INDIRECT JUMP MUST NEVER USE A
-                // VECTOR BEGINNING ON THE LAST BYTE
-                // OF A PAGE
-                // For example if address $3000 contains $40, $30FF contains $80, and $3100 contains $50, the result of JMP ($30FF) will be a transfer of control to $4080 rather than $5080 as you intended i.e. the 6502 took the low byte of the address from $30FF and the high byte from $3000.
-                
-                PC = readWord(addr: Int(nextWord()))
+                PC = readWord(addr: Int(nextWord()), jmpIndirectBug: true)
                 tickcount += 5
                 
                 // MARK: Branches

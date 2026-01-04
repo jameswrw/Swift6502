@@ -82,12 +82,12 @@ struct StackTests {
         
         memory[0xA000] = Opcodes6502.PHP.rawValue
         memory[0x1FF] = 0x00
-        
+        let oldFlags = await cpu.F
         await cpu.runForTicks(3)
         let sp = await cpu.SP
 
         #expect(sp == 0xFE)
-        #expect(memory[0x1FF] == Flags.One.rawValue | Flags.I.rawValue)
+        #expect(memory[0x1FF] == oldFlags | Flags.One.rawValue | Flags.B.rawValue)
     }
     
     @Test func testPLP() async throws {

@@ -31,7 +31,7 @@ class FunctionalTests {
                  f: UInt8,
                  sp: UInt8) in
                 
-                if (pc == 0x644) {
+                if (pc == 0x804) {
                     print("Woo!")
                 }
                 let binaryFlags = String(f, radix: 2)
@@ -73,7 +73,7 @@ class FunctionalTests {
                 }
             }
             
-            cpu = CPU6502(memory: MemoryWrapper(memory))
+             cpu = CPU6502(memory: MemoryWrapper(memory))
             
             // Need to determine what a successful completion looks like.
             await run()
