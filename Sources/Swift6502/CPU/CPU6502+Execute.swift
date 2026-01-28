@@ -288,6 +288,7 @@ public extension CPU6502 {
                 tickcount += 3
             case .PLA:
                 A = popByte()
+                updateNZFlagsFor(newValue: A)
                 tickcount += 4
             case .PHP:
                 pushByte(F | Flags.One.rawValue | Flags.B.rawValue)

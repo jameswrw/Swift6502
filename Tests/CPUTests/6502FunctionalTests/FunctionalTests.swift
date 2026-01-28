@@ -31,15 +31,16 @@ class FunctionalTests {
                  f: UInt8,
                  sp: UInt8) in
                 
-                if (pc == 0x804) {
+                if (pc == 0x37BB) {
                     print("Woo!")
                 }
                 let binaryFlags = String(f, radix: 2)
                 let flags = String(repeating: "0", count: max(0, 8 - binaryFlags.count)) + binaryFlags
-                print(String(
-                    format: "0x%04X:\t\(opcode)\tA: 0x%02X, X: 0x%02X, Y: 0x%02X, SP: 0x%02X, F: \(flags)",
-                    pc, a, x, y, sp
-                )
+                print(
+                    String(
+                        format: "0x%04X:\t\(opcode)\tA: 0x%02X, X: 0x%02X, Y: 0x%02X, SP: 0x%02X, F: \(flags)",
+                        pc, a, x, y, sp
+                    )
                 )
             }
             
