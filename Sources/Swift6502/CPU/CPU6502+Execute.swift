@@ -999,7 +999,7 @@ public extension CPU6502 {
             case .BRK:
                 PC &+= 1
                 pushWord(PC)
-                pushByte(F)
+                pushByte(F | Flags.One.rawValue | Flags.B.rawValue)
                 setFlag(.I)
                 PC = readWord(addr: Int(irqVector))
                 tickcount += 7

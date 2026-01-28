@@ -31,7 +31,7 @@ class FunctionalTests {
                  f: UInt8,
                  sp: UInt8) in
                 
-                if (pc == 0x37BB) {
+                if (pc == 0x0DE4) {
                     print("Woo!")
                 }
                 let binaryFlags = String(f, radix: 2)
