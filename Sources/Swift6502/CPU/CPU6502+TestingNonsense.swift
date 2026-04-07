@@ -13,7 +13,7 @@ internal extension CPU6502 {
     func setA(_ a: UInt8) { A = a }
     func setX(_ x: UInt8) { X = x }
     func setY(_ y:UInt8) { Y = y }
-    func setF(_ f:UInt8) { Y = f }
+    func setF(_ f:UInt8) { F = f }
     func setPC(_ pc: UInt16) { PC = pc }
     func setSP(_ sp: UInt8) { SP = sp }
 

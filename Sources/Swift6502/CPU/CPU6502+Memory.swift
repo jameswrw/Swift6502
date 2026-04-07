@@ -26,7 +26,7 @@ extension CPU6502 {
     
     internal func writeWord(addr: Int, value: UInt16) {
         
-        let hi = (value | 0xFF00) >> 8
+        let hi = (value & 0xFF00) >> 8
         let lo = value & 0x00FF
         
         if endianness == .little {

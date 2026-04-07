@@ -11,7 +11,7 @@ import Foundation
 
 class FunctionalTests {
     
-    // Allocate memory and CPU as optionals we control the lifetime of
+    // Allocate memory and CPU as optionals that we control the lifetime of
     var memory: UnsafeMutablePointer<UInt8>? = nil
     var cpu: CPU6502? = nil
     
