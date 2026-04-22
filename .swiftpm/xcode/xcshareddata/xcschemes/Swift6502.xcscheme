@@ -43,9 +43,6 @@
                <Test
                   Identifier = "FunctionalTests/run6502Tests()">
                </Test>
-               <Test
-                  Identifier = "FunctionalTests/run6502Tests()">
-               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
