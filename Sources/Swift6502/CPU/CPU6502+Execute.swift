@@ -49,6 +49,7 @@ public extension CPU6502 {
     
     // MARK: Reset and run
     func reset() {
+        invalidOpcodeTrap = nil
         clearFlag(.C)
         clearFlag(.Z)
         setFlag(.I)
@@ -101,7 +102,7 @@ public extension CPU6502 {
             }
             
             let pc = PC
-            let opCode = nextOpcode()
+            guard let opCode = nextOpcode() else { break }
             opCodeHook?(pc, opCode, A, X, Y, F, SP)
             
             switch opCode {
@@ -1012,4 +1013,3 @@ public extension CPU6502 {
         }
     }
 }
-

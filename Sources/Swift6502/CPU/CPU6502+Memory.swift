@@ -73,12 +73,14 @@ extension CPU6502 {
         return byte
     }
     
-    internal func nextOpcode() -> Opcodes6502 {
+    internal func nextOpcode() -> Opcodes6502? {
+        let opcodeAddress = PC
         let byte = readByte(addr: Int(PC))
         PC &+= 1
         guard let opcode = Opcodes6502(rawValue: byte) else {
-            assert(false, "Invalid opcode")
-            return .NOP
+            invalidOpcodeTrap = InvalidOpcodeTrap(opcode: byte, address: opcodeAddress)
+            haltExecution()
+            return nil
         }
         return opcode
     }
@@ -119,4 +121,3 @@ extension CPU6502 {
     }
 
 }
-
