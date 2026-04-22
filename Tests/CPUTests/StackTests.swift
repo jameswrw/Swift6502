@@ -23,7 +23,7 @@ struct StackTests {
 
         #expect(x == 0xFF)
         #expect(sp == 0xFF)
-        #expect(f == Flags.One.rawValue | Flags.I.rawValue)
+        #expect(f == Flags.One.rawValue | Flags.I.rawValue | Flags.N.rawValue)
     }
     
     @Test func testTXS() async throws {

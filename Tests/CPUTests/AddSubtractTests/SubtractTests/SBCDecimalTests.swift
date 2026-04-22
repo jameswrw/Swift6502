@@ -216,7 +216,7 @@ struct SBCDecimalTests {
         #expect(a == 0x20)
         #expect(zFlag == false)
         #expect(nFlag == false)
-        #expect(cFlag == false)
+        #expect(cFlag == true)
         #expect(vFlag == false)
     }
     
@@ -276,7 +276,7 @@ struct SBCDecimalTests {
         #expect(a == 0x20)
         #expect(zFlag == false)
         #expect(nFlag == false)
-        #expect(cFlag == false)
+        #expect(cFlag == true)
         #expect(vFlag == false)
     }
     
@@ -375,7 +375,7 @@ struct SBCDecimalTests {
         #expect(a == 0x14)
         #expect(zFlag == false)
         #expect(nFlag == false)
-        #expect(cFlag == false)
+        #expect(cFlag == true)
         #expect(vFlag == false)
     }
 }

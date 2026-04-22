@@ -42,9 +42,9 @@ struct SubtractDecimalTests {
 
                         if dec_ij < 0 {
                             dec_ij += 100
-                            #expect(cFlag)
-                        } else {
                             #expect(!cFlag)
+                        } else {
+                            #expect(cFlag)
                         }
 
                         // It's tempting to do something like 'await cpu.readFlag(.Z) && (hex_ij == 0x00)'
