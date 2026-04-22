@@ -49,6 +49,7 @@ public extension CPU6502 {
     
     // MARK: Reset and run
     func reset() {
+        invalidOpcodeTrap = nil
         clearFlag(.C)
         clearFlag(.Z)
         setFlag(.I)
@@ -101,7 +102,7 @@ public extension CPU6502 {
             }
             
             let pc = PC
-            let opCode = nextOpcode()
+            guard let opCode = nextOpcode() else { break }
             opCodeHook?(pc, opCode, A, X, Y, F, SP)
             
             switch opCode {
@@ -210,15 +211,7 @@ public extension CPU6502 {
                 PC = nextWord()
                 tickcount += 3
             case .JMP_Indirect:
-                // TODO: The following is not implemented.
-                //
-                // From: http://www.6502.org/tutorials/6502opcodes.html#INC
-                // AN INDIRECT JUMP MUST NEVER USE A
-                // VECTOR BEGINNING ON THE LAST BYTE
-                // OF A PAGE
-                // For example if address $3000 contains $40, $30FF contains $80, and $3100 contains $50, the result of JMP ($30FF) will be a transfer of control to $4080 rather than $5080 as you intended i.e. the 6502 took the low byte of the address from $30FF and the high byte from $3000.
-                
-                PC = readWord(addr: Int(nextWord()))
+                PC = readWord(addr: Int(nextWord()), jmpIndirectBug: true)
                 tickcount += 5
                 
                 // MARK: Branches
@@ -296,9 +289,10 @@ public extension CPU6502 {
                 tickcount += 3
             case .PLA:
                 A = popByte()
+                updateNZFlagsFor(newValue: A)
                 tickcount += 4
             case .PHP:
-                pushByte(F)
+                pushByte(F | Flags.One.rawValue | Flags.B.rawValue)
                 tickcount += 3
             case .PLP:
                 F = popByte()
@@ -1006,7 +1000,7 @@ public extension CPU6502 {
             case .BRK:
                 PC &+= 1
                 pushWord(PC)
-                pushByte(F)
+                pushByte(F | Flags.One.rawValue | Flags.B.rawValue)
                 setFlag(.I)
                 PC = readWord(addr: Int(irqVector))
                 tickcount += 7
@@ -1019,4 +1013,3 @@ public extension CPU6502 {
         }
     }
 }
-

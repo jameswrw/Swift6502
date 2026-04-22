@@ -15,6 +15,11 @@ public typealias OpCodeHook = @Sendable (
     _: UInt8            // SP
 ) -> Void
 
+public struct InvalidOpcodeTrap: Sendable, Equatable {
+    public let opcode: UInt8
+    public let address: UInt16
+}
+
 public actor CPU6502 {
     
     public init(memory: MemoryWrapper, ioAddresses: Set<UInt16> = []) {
@@ -56,6 +61,7 @@ public actor CPU6502 {
     internal var X: UInt8 = 0
     internal var Y: UInt8 = 0
     internal var F: UInt8 = Flags.One.rawValue | Flags.I.rawValue
+    public internal(set) var invalidOpcodeTrap: InvalidOpcodeTrap? = nil
     
     // MARK: Vectors
     internal let resetVector = 0xFFFC
@@ -65,4 +71,3 @@ public actor CPU6502 {
     // MARK: Hooks
     var opCodeHook: OpCodeHook? = nil
 }
-

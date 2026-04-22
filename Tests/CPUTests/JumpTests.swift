@@ -20,9 +20,8 @@ struct JumpTests {
         memory[0x1235] = 0xAA
         
         await cpu.runForTicks(3)
-        let pc1 = await cpu.PC
-
-        #expect(pc1 == 0x1234)
+        let pc = await cpu.PC
+        #expect(pc == 0x1234)
         
         await cpu.runForTicks(2)
         let a = await cpu.A
@@ -45,9 +44,35 @@ struct JumpTests {
         memory[0x5679] = 0x42
         
         await cpu.runForTicks(3)
-        let pc1 = await cpu.PC
+        let pc = await cpu.PC
+        #expect(pc == 0x5678)
+        
+        await cpu.runForTicks(2)
+        let a = await cpu.A
+        let f = await cpu.F
 
-        #expect(pc1 == 0x5678)
+        #expect(a == 0x42)
+        #expect(f == Flags.One.rawValue | Flags.I.rawValue)
+    }
+    
+    @Test func testJMP_IndirectPageBoundary() async throws {
+        // See http://www.6502.org/tutorials/6502opcodes.html#JMP
+        
+        let (cpu, memory) = await initCPU()
+        defer { memory.deallocate() }
+
+        memory[0xA000] = Opcodes6502.JMP_Indirect.rawValue
+        memory[0xA001] = 0xFF
+        memory[0xA002] = 0x30
+        memory[0x30FF] = 0x80
+        memory[0x3100] = 0x50
+        memory[0x3000] = 0x40
+        memory[0x4080] = Opcodes6502.LDA_Immediate.rawValue
+        memory[0x4081] = 0x42
+        
+        await cpu.runForTicks(3)
+        let pc = await cpu.PC
+        #expect(pc == 0x4080)
         
         await cpu.runForTicks(2)
         let a = await cpu.A
