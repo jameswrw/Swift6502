@@ -169,9 +169,9 @@ extension CPU6502 {
         var hiByteResult = Int16(hiByte1) - Int16(hiByte0) - internalCarry
         if hiByteResult < 0x0 {
             hiByteResult += 0xA
-            setFlag(.C)
-        } else {
             clearFlag(.C)
+        } else {
+            setFlag(.C)
         }
         
         let result = UInt8((hiByteResult << 0x4) | loByteResult)

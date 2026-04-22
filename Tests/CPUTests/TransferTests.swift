@@ -9,6 +9,78 @@ import Testing
 @testable import Swift6502
 
 struct TransferTests {
+    @Test func testTSX() async throws {
+        let (cpu, memory) = await initCPU()
+        defer { memory.deallocate() }
+        
+        await cpu.setSP(0x64)
+        memory[0xA000] = Opcodes6502.TSX.rawValue
+
+        await cpu.runForTicks(2)
+        
+        var x = await cpu.X
+        var sp = await cpu.SP
+        var zFlag = await cpu.readFlag(.Z)
+        var nFlag = await cpu.readFlag(.N)
+        
+        #expect(x == 0x64)
+        #expect(sp == 0x64)
+        #expect(zFlag == false)
+        #expect(nFlag == false)
+        
+        await cpu.reset()
+        await cpu.setSP(0x00)
+        await cpu.setX(0x12)
+        memory[0xA000] = Opcodes6502.TSX.rawValue
+
+        await cpu.runForTicks(2)
+        
+        x = await cpu.X
+        sp = await cpu.SP
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(x == 0)
+        #expect(sp == 0)
+        #expect(zFlag == true)
+        #expect(nFlag == false)
+        
+        await cpu.reset()
+        await cpu.setSP(0xFF)
+        memory[0xA000] = Opcodes6502.TSX.rawValue
+
+        await cpu.runForTicks(2)
+        
+        x = await cpu.X
+        sp = await cpu.SP
+        zFlag = await cpu.readFlag(.Z)
+        nFlag = await cpu.readFlag(.N)
+        
+        #expect(x == 0xFF)
+        #expect(sp == 0xFF)
+        #expect(zFlag == false)
+        #expect(nFlag == true)
+    }
+    
+    @Test func testTXS() async throws {
+        let (cpu, memory) = await initCPU()
+        defer { memory.deallocate() }
+        
+        await cpu.setX(0x64)
+        await cpu.setF(Flags.One.rawValue | Flags.I.rawValue | Flags.N.rawValue)
+        memory[0xA000] = Opcodes6502.TXS.rawValue
+
+        await cpu.runForTicks(2)
+        
+        let x = await cpu.X
+        let sp = await cpu.SP
+        let f = await cpu.F
+        
+        #expect(x == 0x64)
+        #expect(sp == 0x64)
+        #expect(f == Flags.One.rawValue | Flags.I.rawValue | Flags.N.rawValue)
+    }
+
     @Test func testTAX() async throws {
         let (cpu, memory) = await initCPU()
         defer { memory.deallocate() }

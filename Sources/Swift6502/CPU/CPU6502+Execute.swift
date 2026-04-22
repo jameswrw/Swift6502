@@ -283,6 +283,7 @@ public extension CPU6502 {
                 tickcount += 2
             case .TSX:
                 X = SP
+                updateNZFlagsFor(newValue: X)
                 tickcount += 2
             case .PHA:
                 pushByte(A)
