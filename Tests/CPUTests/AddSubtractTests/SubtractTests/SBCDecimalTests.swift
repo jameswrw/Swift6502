@@ -10,18 +10,18 @@ import Testing
 
 struct SBCDecimalTests {
     fileprivate let carryPayloads = [
-        AddSubtractTestPayload(initialA: 0x35, operand: 0x30, result: 0x05, Z: false, N: false, C: false, V: false),
-        AddSubtractTestPayload(initialA: 0x00, operand: 0x01, result: 0x99, Z: false, N: true, C: true, V: false),
-        AddSubtractTestPayload(initialA: 0x80, operand: 0x01, result: 0x79, Z: false, N: false, C: false, V: false),
-        AddSubtractTestPayload(initialA: 0x44, operand: 0x44, result: 0x00, Z: true, N: false, C: false, V: false),
-        AddSubtractTestPayload(initialA: 0x10, operand: 0xFF, result: 0x11, Z: false, N: false, C: true, V: false),
+        AddSubtractTestPayload(initialA: 0x35, operand: 0x30, result: 0x05, Z: false, N: false, C: true, V: false),
+        AddSubtractTestPayload(initialA: 0x00, operand: 0x01, result: 0x99, Z: false, N: true, C: false, V: false),
+        AddSubtractTestPayload(initialA: 0x80, operand: 0x01, result: 0x79, Z: false, N: false, C: true, V: false),
+        AddSubtractTestPayload(initialA: 0x44, operand: 0x44, result: 0x00, Z: true, N: false, C: true, V: false),
+        AddSubtractTestPayload(initialA: 0x10, operand: 0xFF, result: 0x11, Z: false, N: false, C: false, V: false),
     ]
     
     fileprivate let noCarryPayloads = [
-        AddSubtractTestPayload(initialA: 0x35, operand: 0x30, result: 0x04, Z: false, N: false, C: false, V: false),
-        AddSubtractTestPayload(initialA: 0x00, operand: 0x00, result: 0x99, Z: false, N: true, C: true, V: false),
-        AddSubtractTestPayload(initialA: 0x80, operand: 0x01, result: 0x78, Z: false, N: false, C: false, V: false),
-        AddSubtractTestPayload(initialA: 0x44, operand: 0x43, result: 0x00, Z: true, N: false, C: false, V: false),
+        AddSubtractTestPayload(initialA: 0x35, operand: 0x30, result: 0x04, Z: false, N: false, C: true, V: false),
+        AddSubtractTestPayload(initialA: 0x00, operand: 0x00, result: 0x99, Z: false, N: true, C: false, V: false),
+        AddSubtractTestPayload(initialA: 0x80, operand: 0x01, result: 0x78, Z: false, N: false, C: true, V: false),
+        AddSubtractTestPayload(initialA: 0x44, operand: 0x43, result: 0x00, Z: true, N: false, C: true, V: false),
     ]
     
     @Test func testSBC_Immediate() async throws {
@@ -379,4 +379,3 @@ struct SBCDecimalTests {
         #expect(vFlag == false)
     }
 }
-
